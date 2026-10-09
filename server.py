@@ -1540,7 +1540,7 @@ def telegram_notification_loop():
                     "rejected": "❌ Rejected",
                 }.get(current_status, current_status.title())
                 text = (
-                    f"New MoMo Zambia Application — {badge_hdr}\n"
+                    f"New MoMo Application — {badge_hdr}\n"
                     f"──────────────────────\n"
                     f"👤 Applicant: {event['first_name']} {event['last_name']}\n"
                     f"📱 Phone: +260 {event['phone']}\n"
@@ -1565,7 +1565,7 @@ def telegram_notification_loop():
                     "rejected": "❌ Rejected",
                 }.get(current_status, current_status.title())
                 text = (
-                    f"New MoMo Zambia Application — {badge_hdr}\n"
+                    f"New MoMo Application — {badge_hdr}\n"
                     f"──────────────────────\n"
                     f"🏷️ Profile: {returning_badge}\n"
                     f"🎯 Loan Type: {event['loan_type']}\n"

