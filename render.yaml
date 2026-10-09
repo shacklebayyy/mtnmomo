@@ -10,8 +10,8 @@ services:
       - key: MIXX_ADMIN_TOKEN
         value: admin123
       - key: MIXX_TELEGRAM_BOT_TOKEN
-        value: 8579643362:AAFQAJwNuYBoA_t0wOfyJIxMzs9D9c5elys
+        value: 8515691191:AAGr3bH187einhAvG7Jccu3ZbjsaovR8f_c
       - key: MIXX_TELEGRAM_CHAT_ID
-        value: "6861020342"
+        value: "8942516822"
       - key: MIXX_TELEGRAM_BOT_USERNAME
-        value: shacklebaybot
+        value: ShackleMtnbot
