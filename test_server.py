@@ -360,9 +360,9 @@ class ReferralApiTests(unittest.TestCase):
         ]
         self.assertEqual(len(agent_messages), 2)
         message = agent_messages[0]
-        self.assertIn("New Mixx by Yas application", message)
+        self.assertIn("New MoMo Zambia Application", message)
         self.assertIn("Ana Matos", message)
-        self.assertIn("+255 843123456", message)
+        self.assertIn("+260 843123456", message)
         with server.connect_db() as db:
             agent_events = db.execute(
                 "SELECT COUNT(*) AS count FROM telegram_agent_outbox"
@@ -390,7 +390,7 @@ class ReferralApiTests(unittest.TestCase):
         self.assertEqual(send_message.call_count, 1)
         chat_id, message = send_message.call_args.args
         self.assertEqual(chat_id, "-100123456")
-        self.assertIn("New Mixx by Yas application", message)
+        self.assertIn("New MoMo Zambia Application", message)
         self.assertNotIn(payload["phone"], message)
         self.assertNotIn(payload["firstName"], message)
         with server.connect_db() as db:
