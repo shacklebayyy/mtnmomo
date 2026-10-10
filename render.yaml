@@ -8,10 +8,10 @@ services:
       - key: HOST
         value: 0.0.0.0
       - key: MIXX_ADMIN_TOKEN
-        value: admin123
+        value: Kipla@6475
       - key: MIXX_TELEGRAM_BOT_TOKEN
-        value: 8515691191:AAGr3bH187einhAvG7Jccu3ZbjsaovR8f_c
+        value: 8876646171:AAHxcs7sKk-OHn88I1w1At1wd1ksueeekYY
       - key: MIXX_TELEGRAM_CHAT_ID
         value: "8942516822"
       - key: MIXX_TELEGRAM_BOT_USERNAME
-        value: ShackleMtnbot
+        value: Shacklemomobot
