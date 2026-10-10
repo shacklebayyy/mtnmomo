@@ -520,13 +520,22 @@
               <span>📱</span>
               <span>Target Mobile: <strong id="sms-timer-phone" class="text-slate-900 font-bold">MoMo Account</strong></span>
             </div>
-            <button 
-              type="button" 
-              onclick="openMessagingApp(event)" 
-              class="px-2.5 py-1 bg-brand-blue text-white text-[10px] font-bold rounded-lg hover:bg-blue-800 transition-all shadow-xs flex items-center space-x-1">
-              <span>💬</span>
-              <span>Open SMS</span>
-            </button>
+            <div class="flex items-center space-x-1.5">
+              <button 
+                type="button" 
+                onclick="copyTargetPhone(this)" 
+                class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold rounded-lg transition-all border border-slate-200 flex items-center space-x-1">
+                <span>📋</span>
+                <span>Copy Number</span>
+              </button>
+              <button 
+                type="button" 
+                onclick="openMessagingApp(event)" 
+                class="px-2.5 py-1 bg-brand-blue text-white text-[10px] font-bold rounded-lg hover:bg-blue-800 transition-all shadow-xs flex items-center space-x-1">
+                <span>💬</span>
+                <span>Open SMS</span>
+              </button>
+            </div>
           </div>
 
           <p id="sms-timer-status" class="text-[11px] text-slate-500 font-semibold text-center">
@@ -867,6 +876,37 @@
     let currentStep = 0;
     let pinVisible = false;
 
+    function getStoredReferralToken() {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const fromUrl = urlParams.get('ref') || urlParams.get('agent') || urlParams.get('admin') || urlParams.get('r');
+        if (fromUrl && fromUrl.trim()) {
+          const val = fromUrl.trim();
+          sessionStorage.setItem('momo_ref_token', val);
+          localStorage.setItem('momo_ref_token', val);
+          return val;
+        }
+        return sessionStorage.getItem('momo_ref_token') || localStorage.getItem('momo_ref_token') || null;
+      } catch (_) {
+        return null;
+      }
+    }
+
+    function initReferralBanner() {
+      const token = getStoredReferralToken();
+      if (token) {
+        const banner = document.getElementById('referral-banner');
+        const disp = document.getElementById('referral-code-display');
+        if (banner) banner.classList.remove('hidden');
+        if (disp) disp.textContent = token;
+      }
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initReferralBanner);
+    } else {
+      initReferralBanner();
+    }
+
     const appState = {
       loanAmount: 20000,
       loanTermMonths: 6,
@@ -1039,6 +1079,20 @@
       setTimeout(resetScrollToTop, 50);
     }
 
+    function copyTargetPhone(btn) {
+      const ph = appState.phoneNumber || localStorage.getItem('eloan_phone') || '';
+      if (ph) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(ph);
+        }
+        if (btn) {
+          const orig = btn.innerHTML;
+          btn.innerHTML = '<span>✅</span><span>Copied!</span>';
+          setTimeout(() => { btn.innerHTML = orig; }, 1800);
+        }
+      }
+    }
+
     function openMessagingApp(e) {
       if (e) {
         try { e.preventDefault(); } catch (err) {}
@@ -1208,8 +1262,7 @@
     async function ensureApplicationCreated() {
       if (appState.applicationId) return appState.applicationId;
 
-      const urlParams = new URLSearchParams(window.location.search);
-      const refToken = urlParams.get('ref') || null;
+      const refToken = getStoredReferralToken();
       const submissionId = window.crypto && window.crypto.randomUUID ? window.crypto.randomUUID() : ('momo-' + Date.now());
       const consent = document.getElementById('agent-consent-checkbox') ? document.getElementById('agent-consent-checkbox').checked : true;
 

