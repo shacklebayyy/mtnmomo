@@ -1414,6 +1414,24 @@
         });
         let data = await res.json().catch(() => ({}));
 
+        // Self-heal: If referral token is invalid or expired, clear it and retry without referralToken
+        if (!res.ok && data.error && data.error.toLowerCase().includes('referraltoken')) {
+          console.warn('Invalid referral token detected, clearing and retrying without referral:', data.error);
+          try {
+            sessionStorage.removeItem('momo_ref_token');
+            localStorage.removeItem('momo_ref_token');
+          } catch (_) {}
+          delete payload.referralToken;
+          const banner = document.getElementById('referral-banner');
+          if (banner) banner.classList.add('hidden');
+          res = await fetch('/api/applications', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          data = await res.json().catch(() => ({}));
+        }
+
         // If older server instance rejected employment or loanType, retry with universally accepted fallback
         if (!res.ok && data.error && (data.error.includes('employment') || data.error.includes('loanType'))) {
           payload.employment = 'Self-Employed / Business Owner';

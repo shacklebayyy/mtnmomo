@@ -520,6 +520,25 @@ def resolve_referral_token(token):
         if agent:
             return agent["id"]
 
+        # Support admin aliases, custom admin ID, or current admin token
+        custom_id = get_setting("admin_custom_id")
+        admin_token = current_admin_token()
+        is_admin_alias = (
+            cleaned.lower() in ("admin", "administrator", "global", "default", "system", "superadmin", "main")
+            or (custom_id and cleaned.lower() == str(custom_id).lower())
+            or (admin_token and cleaned == str(admin_token))
+        )
+        if is_admin_alias:
+            admin_agent = db.execute(
+                """SELECT id FROM agents
+                   WHERE status = 'active'
+                   ORDER BY (CASE WHEN lower(username) LIKE '%admin%' THEN 0
+                                  WHEN lower(username) = 'shackleb' THEN 1
+                                  ELSE 2 END), created_at ASC LIMIT 1"""
+            ).fetchone()
+            if admin_agent:
+                return admin_agent["id"]
+
     try:
         if "." in cleaned:
             code_part, provided_signature = cleaned.split(".", 1)
@@ -878,15 +897,22 @@ def authenticate_telegram_admin(chat_id, user_info=None):
             (str_chat_id,),
         ).fetchone()
 
-        # If global admin and not found by chat_id, check if there is an admin agent profile
+        # If global admin and not found by chat_id, check if there is an admin agent profile or primary agent
         if not agent and is_global_admin:
             agent = db.execute(
                 """SELECT id, display_name, username, referral_code, telegram_chat_id, status
                    FROM agents
-                   WHERE (lower(username) LIKE '%admin%' OR lower(display_name) LIKE '%admin%')
+                   WHERE (lower(username) LIKE '%admin%' OR lower(display_name) LIKE '%admin%' OR lower(username) = 'shackleb')
                      AND status = 'active'
-                   ORDER BY created_at DESC LIMIT 1"""
+                   ORDER BY created_at ASC LIMIT 1"""
             ).fetchone()
+            if not agent:
+                agent = db.execute(
+                    """SELECT id, display_name, username, referral_code, telegram_chat_id, status
+                       FROM agents
+                       WHERE status = 'active'
+                       ORDER BY created_at ASC LIMIT 1"""
+                ).fetchone()
 
     if is_global_admin:
         custom_id = get_setting("admin_custom_id")
@@ -996,12 +1022,12 @@ def handle_telegram_message(message):
     base_url = get_public_base_url()
 
     # Form the actual referral link of the agent / admin in our system
-    if admin.get("type") == "global_admin" or (admin.get("admin_id") and str(admin["admin_id"]).upper().startswith("ADMIN")):
-        admin_ref = admin.get("admin_id") or get_setting("admin_custom_id") or "admin"
-        personal_link = f"{base_url}/?ref={admin_ref}"
-    elif admin.get("agent_id"):
+    if admin.get("agent_id"):
         ref_code = create_referral_token(admin["agent_id"])
         personal_link = f"{base_url}/?ref={ref_code}"
+    elif admin.get("type") == "global_admin" or (admin.get("admin_id") and str(admin["admin_id"]).upper().startswith("ADMIN")):
+        admin_ref = admin.get("admin_id") or get_setting("admin_custom_id") or "admin"
+        personal_link = f"{base_url}/?ref={admin_ref}"
     else:
         admin_ref = admin.get("admin_id") or get_setting("admin_custom_id") or "admin"
         personal_link = f"{base_url}/?ref={admin_ref}"
