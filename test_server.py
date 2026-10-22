@@ -362,7 +362,7 @@ class ReferralApiTests(unittest.TestCase):
         message = agent_messages[0]
         self.assertIn("New MoMo Application", message)
         self.assertIn("Ana Matos", message)
-        self.assertIn("+260 843123456", message)
+        self.assertIn("+256 843123456", message)
         with server.connect_db() as db:
             agent_events = db.execute(
                 "SELECT COUNT(*) AS count FROM telegram_agent_outbox"
